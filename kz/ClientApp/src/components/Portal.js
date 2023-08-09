@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import "./portal.css";
+import "./Portal.css";
 
 export class Portal extends Component {
 
