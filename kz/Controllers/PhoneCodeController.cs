@@ -1,16 +1,22 @@
 ﻿using kz.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace kz.Controllers
 {
+    public class JsonData
+    {
+        public string? TabelCode { get; set; }
+        public string? PhoneCode { get; set; }
+    }
+
+    [ApiController]
+    [Route("[controller]")]
     public class PhoneCodeController : Controller
     {
-        private bool _createPhoneCode(string TabelCode)
-        {
-            return _sendPhoneCodeToDb(_generatePhoneCode(), TabelCode); ;
-        }
-        private bool _sendPhoneCodeToDb(string PhoneCode, string TabelCode)
+        private bool _sendToSmsServer(string PhoneCode)
         {
             return true;
         }
@@ -18,33 +24,51 @@ namespace kz.Controllers
         {
             return "000000";
         }
+      
 
-
-        private string _getPhoneCodeFromDb(string TabelCode)
+        public bool CreatePhoneCode(User user)
         {
-            if (TabelCode == "000000") {
-                return "000000";
+            string generatedCode = _generatePhoneCode();
+            _sendToSmsServer(generatedCode);
+            user.PhoneCode = generatedCode;
+            return true;
+        }
+
+        [HttpPost]
+        public async Task Post(ApplicationContext db)
+        {
+            // получаем табельный код и введеный смс код
+            // возвращаем токен
+            JsonData data;
+            using (var reader = new StreamReader(Request.Body))
+            {
+                var body = await reader.ReadToEndAsync();
+                data = JsonSerializer.Deserialize<JsonData>(body);
+            }
+
+            User? user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == data.TabelCode);
+            if (user != null)
+            {
+                if (user.PhoneCode == data.PhoneCode)
+                {
+                    // ДОДЕЛАТЬ
+                    // генерируем токен
+                    // посылаем в бд
+                    string token = "123123";
+                    await Response.WriteAsync("{\"Token\":\"" + token + "\"}");
+                    user.PhoneCode = "";
+                    db.Users.Update(user);
+                    await db.SaveChangesAsync();
+                }
+                else
+                {
+                    await Response.WriteAsync("false");
+                }
             }
             else
             {
-                return "0";
+                await Response.WriteAsync("false");
             }
-        }
-
-
-
-
-        [HttpPost]
-        public bool CreatePhoneCode(string TabelCode)
-        {
-            return _createPhoneCode(TabelCode);
-        }
-
-        [HttpPost]
-        public bool ValidatePhoneCode(string TabelCode, string PhoneCode)
-        {
-            string code = _getPhoneCodeFromDb(TabelCode);
-            return PhoneCode == code;
         }
     }
 }

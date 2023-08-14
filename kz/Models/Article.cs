@@ -1,16 +1,18 @@
-﻿namespace kz.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace kz.Models
 {
     public class Article
     {
-        public string? TabelCode { get; }
-        // Типы статьи:
-        //      Начислено - Na
-        //      Удержано - Ud
-        //      Выплачено - Vi
-        public string? ArticleType { get; } 
-        public string? ArticleName { get; }
-        public int DayTime { get; }
-        public int HourTime { get; }
-        public int Money { get; }
+        public string TabelCode { get; set; }
+                              // Типы статьи:
+                              //      Начислено - Na
+                              //      Удержано - Ud
+                              //      Выплачено - Vi
+        public string ArticleType { get; set; } 
+        public string ArticleName { get; set; }
+        public int? DayTime { get; set; }
+        public int? HourTime { get; set; }
+        public double Money { get; set; }
     }
 }

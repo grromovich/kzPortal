@@ -2,18 +2,37 @@
 import "./Portal.css";
 
 export class Portal extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: "",
+            articles: [],
+            tabelCode: sessionStorage.getItem("TabelCode"),
+        };
+        
+    }
+
+    sumArticles(articles) {
+        let sum = 0;
+        articles.forEach((el) => {
+            sum += el.Money
+        })
+        return sum
+    }
 
     onInputChange = () => {
         window.location.assign('/');
     };
-
+    componentWillMount() {
+        this.GetData(this.state.tabelCode)
+    }
     render() {
         return (
             <div>
                 <div class="header">
                     <ul class="menu">
-                        <li>Кубасов Кирилл Денисович</li>
-                        <li>Таб. номер: 515664</li>
+                        <li>{ this.state.name}</li>
+                        <li>Таб. номер: {this.state.tabelCode}</li>
                         <li onClick={this.onInputChange} class="logout">Выйти</li>
                     </ul>
                 </div>
@@ -40,44 +59,16 @@ export class Portal extends Component {
                                 <td>Начислено:</td>
                                 <td></td>
                                 <td></td>
-                                <td>73 598,40</td>
+                                <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType == "Na"))}</td>
                             </tr>
-                            <tr>
-                                <td>Оплата по окладу</td>
-                                <td>26</td>
-                                <td>156</td>
-                                <td>29 013,00</td>
-                            </tr>
-                            <tr>
-                                <td>Районный коэффициент</td>
-                                <td></td>
-                                <td></td>
-                                <td>5 551,95</td>
-                            </tr>
-                            <tr>
-                                <td>Стимулирующая выплата (ист.2.2, 4.1, 4.2, 5.4, 5.5, 7)</td>
-                                <td></td>
-                                <td></td>
-                                <td>8 000,00</td>
-                            </tr>
-                            <tr>
-                                <td>Начисления в связи с больничным листом</td>
-                                <td></td>
-                                <td></td>
-                                <td>5 603,45</td>
-                            </tr>
-                            <tr>
-                                <td>Расчет денежных начислений по отпускным</td>
-                                <td></td>
-                                <td></td>
-                                <td>18 430,00</td>
-                            </tr>
-                            <tr>
-                                <td>Начисления по социальным отчислениям</td>
-                                <td></td>
-                                <td></td>
-                                <td>7 000,00</td>
-                            </tr>
+                            {this.state.articles.filter(article => article.ArticleType == "Na").map(filteredArticle => (
+                                <tr>
+                                    <td>{filteredArticle.ArticleName}</td>
+                                    <td>{filteredArticle.DayTime}</td>
+                                    <td>{filteredArticle.HourTime}</td>
+                                    <td>{filteredArticle.Money}</td>
+                                </tr>
+                            ))}
                         </table>
                     </div>
                     <div class="right-table">
@@ -90,28 +81,43 @@ export class Portal extends Component {
                             </tbody>
                             <tr class="zhir">
                                 <td>Удержано:</td>
-                                <td>5 534,00</td>
+                                <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType == "Ud"))}</td>
                             </tr>
-                            <tr>
-                                <td>НДФЛ</td>
-                                <td>5 534,00</td>
-                            </tr>
+                            {this.state.articles.filter(article => article.ArticleType == "Ud").map(filteredArticle => (
+                                <tr>
+                                    <td>{filteredArticle.ArticleName}</td>
+                                    <td>{filteredArticle.Money}</td>
+                                </tr>
+                            ))}
                             <tr class="zhir">
                                 <td>Выплачено:</td>
-                                <td>68 064,40</td>
+                                <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType == "Vi"))}</td>
                             </tr>
-                            <tr>
-                                <td>За первую половину месяца (Банк, вед. № 12507 от 18.09.20)</td>
-                                <td>22 688,13</td>
-                            </tr>
-                            <tr>
-                                <td>Зарплата за месяц (Банк, вед. № 12138 от 30.09.20)</td>
-                                <td>45 376,27</td>
-                            </tr>
+                            {this.state.articles.filter(article => article.ArticleType == "Vi").map(filteredArticle => (
+                                <tr>
+                                    <td>{filteredArticle.ArticleName}</td>
+                                    <td>{filteredArticle.Money}</td>
+                                </tr>
+                            ))}
                         </table>
                     </div>
                 </div>
             </div>
         )
+    }
+    async GetData(tabel) {
+        let response = await fetch('data',
+            {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    TabelCode: tabel,
+                })
+            });
+        let data = await response.json();
+        console.log(data)
+        if (data !== false) {
+            this.setState({ name: data["Name"], articles: data["Articles"] })
+        }
     }
 };

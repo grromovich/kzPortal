@@ -30,6 +30,25 @@ h1 {
     line-height: normal;
 }
 
+.wrong-code-text {
+    padding-top: 20px;
+    color: #FFF;
+    font-family: Inter;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+
+.phone-text {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
 .next-btn {
     width: 218px;
     height: 39px;

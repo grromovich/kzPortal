@@ -3,20 +3,17 @@ namespace kz.Models
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<User> Users { get; } = null!;
-        public DbSet<Article> Articles { get; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Article> Articles { get; set; } = null!;
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
             Database.EnsureCreated();   // создаем базу данных при первом обращении
         }
-        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasData(
-                    new User { Id = 1, Name = "Tom", Age = 37 },
-                    new User { Id = 2, Name = "Bob", Age = 41 },
-                    new User { Id = 3, Name = "Sam", Age = 24 }
-            );
-        }*/
+            modelBuilder.Entity<Article>().HasKey(v => v.TabelCode);
+            modelBuilder.Entity<User>().HasKey(v => v.TabelCode);
+        }
     }
 }

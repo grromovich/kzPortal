@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
+string connection = "workstation id=TasksDB.mssql.somee.com;packet size=4096;user id=samuelmoore_SQLLogin_1;pwd=qv4m4l8qse;data source=TasksDB.mssql.somee.com;persist security info=False;initial catalog=TasksDB;TrustServerCertificate=True;";
 builder.Services.AddDbContext<kz.Models.ApplicationContext>(options => options.UseSqlServer(connection));
 
 // Add services to the container.
