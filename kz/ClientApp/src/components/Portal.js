@@ -59,9 +59,9 @@ export class Portal extends Component {
                                 <td>Начислено:</td>
                                 <td></td>
                                 <td></td>
-                                <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType == "Na"))}</td>
+                                <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType === "Na"))}</td>
                             </tr>
-                            {this.state.articles.filter(article => article.ArticleType == "Na").map(filteredArticle => (
+                            {this.state.articles.filter(article => article.ArticleType === "Na").map(filteredArticle => (
                                 <tr>
                                     <td>{filteredArticle.ArticleName}</td>
                                     <td>{filteredArticle.DayTime}</td>
@@ -81,9 +81,9 @@ export class Portal extends Component {
                             </tbody>
                             <tr class="zhir">
                                 <td>Удержано:</td>
-                                <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType == "Ud"))}</td>
+                                <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType === "Ud"))}</td>
                             </tr>
-                            {this.state.articles.filter(article => article.ArticleType == "Ud").map(filteredArticle => (
+                            {this.state.articles.filter(article => article.ArticleType === "Ud").map(filteredArticle => (
                                 <tr>
                                     <td>{filteredArticle.ArticleName}</td>
                                     <td>{filteredArticle.Money}</td>
@@ -91,9 +91,9 @@ export class Portal extends Component {
                             ))}
                             <tr class="zhir">
                                 <td>Выплачено:</td>
-                                <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType == "Vi"))}</td>
+                                <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType === "Vi"))}</td>
                             </tr>
-                            {this.state.articles.filter(article => article.ArticleType == "Vi").map(filteredArticle => (
+                            {this.state.articles.filter(article => article.ArticleType === "Vi").map(filteredArticle => (
                                 <tr>
                                     <td>{filteredArticle.ArticleName}</td>
                                     <td>{filteredArticle.Money}</td>
