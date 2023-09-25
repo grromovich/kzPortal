@@ -1,18 +1,13 @@
-import { Home } from "./components/Home";
-import { Phone } from "./components/Phone"
-import { Portal } from "./components/Portal"
+import { Home } from "./app/pages/Home/Home";
+import { Main } from "./app/pages/Main/Main"
 const AppRoutes = [
   {
     index: true,
     element: <Home />
   },
   {
-        path: "/phone",
-        element: <Phone />
-  },
-  {
-      path: "/portal",
-      element: <Portal />
+      path: "/main",
+      element: <Main />
   }
 ];
 

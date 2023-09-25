@@ -1,31 +1,37 @@
-﻿using Azure;
-using kz.Models;
+﻿using kz.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
+
 namespace kz.Controllers
 {
-    public class Tabel
-    {
-        public string? TabelCode { get; set; }
-    }
 
     [ApiController]
     [Route("[controller]")]
-    public class PersonCode : Controller
+    public class PasswordChangeController : Controller
     {
+        public class JsonData
+        {
+            public string? APIkey { get; set; }
+            public string? TabelCode { get; set; }
+            public string? Password { get; set; }
+        }
+
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            Tabel code;
+            // получаем табельный код и пароль
+            // возвращаем токен
+            JsonData data;
             using (var reader = new StreamReader(Request.Body))
             {
                 var body = await reader.ReadToEndAsync();
-                code = JsonSerializer.Deserialize<Tabel>(body);
+                data = JsonSerializer.Deserialize<JsonData>(body);
             }
-            User? user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == code.TabelCode);
+
+            User? user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == data.TabelCode);
             if (user != null)
             {
                 await Response.WriteAsync("true");
@@ -35,5 +41,6 @@ namespace kz.Controllers
                 await Response.WriteAsync("false");
             }
         }
+
     }
 }

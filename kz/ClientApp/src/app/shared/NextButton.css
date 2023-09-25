@@ -1,0 +1,14 @@
+.next-btn {
+    width: 218px;
+    height: 39px;
+    border-radius: 7px;
+    background: #FFF;
+    color: #000;
+    font-family: Inter;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    transition: all 0.2s;
+    border: none;
+}

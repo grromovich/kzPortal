@@ -5,14 +5,16 @@ namespace kz.Models
     public class Article
     {
         public string TabelCode { get; set; }
-                              // Типы статьи:
-                              //      Начислено - Na
-                              //      Удержано - Ud
-                              //      Выплачено - Vi
-        public string ArticleType { get; set; } 
+        // Типы статьи:
+        //      Начислено - Na
+        //      Удержано - Ud
+        //      Выплачено - Vi
+        public string ArticleType { get; set; }
         public string ArticleName { get; set; }
+        public string Period { get; set; }
         public int? DayTime { get; set; }
         public int? HourTime { get; set; }
+        public int? Oplacheno { get; set;}
         public double Money { get; set; }
     }
 }

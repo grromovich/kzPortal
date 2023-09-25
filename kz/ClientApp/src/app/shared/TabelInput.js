@@ -10,7 +10,7 @@
     useState,
 } from 'react';
 
-import "./input.css";
+import "./TabelInput.css";
 
 /*export interface ReactInputVerificationCodeProps {
     autoFocus?: boolean;
@@ -29,6 +29,7 @@ export const ReactInputVerificationCode = ({
     length = 6,
     onChange = () => null,
     onCompleted = () => null,
+    onEnterPressed = () => null,
     placeholder = '·',
     type = 'number',
     value: defaultValue = '',
@@ -104,9 +105,9 @@ export const ReactInputVerificationCode = ({
         const input = inputsRefs[index]?.current;
 
         if (input) {
-            requestAnimationFrame(() => {
+            /*requestAnimationFrame(() => {
                 input.blur();
-            });
+            });*/
         }
     };
 
@@ -115,7 +116,7 @@ export const ReactInputVerificationCode = ({
 
         if (input) {
             setFocusedIndex(index);
-            selectInputContent(index);
+            //selectInputContent(index);
         }
     };
 
@@ -185,6 +186,17 @@ export const ReactInputVerificationCode = ({
 
             setValue('', focusedIndex);
             focusInput(index - 1);
+
+            return;
+        }
+
+
+        if (eventKey==="Enter"){
+            const arr = values.filter((value) => value!="")
+            if(arr.length === length){
+                event.preventDefault();
+                onEnterPressed();
+            }
 
             return;
         }
