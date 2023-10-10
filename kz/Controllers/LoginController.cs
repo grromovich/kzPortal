@@ -79,6 +79,7 @@ namespace kz.Controllers
                 {
                     await Response.WriteAsync("{\"APIkey\":\"" + ToSHA256(data.Password) + "\"}");
                     db.BadLogins.Where(u => u.TabelCode == data.TabelCode).ExecuteDelete();
+                    db.SaveChanges();
                 }
                 else
                 {
