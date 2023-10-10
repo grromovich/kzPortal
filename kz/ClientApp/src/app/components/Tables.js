@@ -5,7 +5,6 @@ export class Tables extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            articles: this.props.articles
          }
     }
     sumArticles(articles) {
@@ -20,24 +19,27 @@ export class Tables extends Component {
         <div className="tables">
             <div className="left_table">
                 <table>
-                    <tr>
-                        <th className="vid">Вид</th>
-                        <th className="period">Период</th>
-                        <th className="time">Дни</th>
-                        <th className="time">Часы</th>
-                        <th className="oplacheno">Оплачено</th>
-                        <th className="summa">Сумма</th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th className="vid">Вид</th>
+                            <th className="period">Период</th>
+                            <th className="time">Дни</th>
+                            <th className="time">Часы</th>
+                            <th className="oplacheno">Оплачено</th>
+                            <th className="summa">Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <tr className="bold">
                         <td>Начислено:</td>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType === "Na"))}</td>
+                        <td>{this.sumArticles(this.props.articles.filter(article => article.ArticleType === "Na"))}</td>
                     </tr>
-                    {this.state.articles.filter(article => article.ArticleType === "Na").map(filteredArticle => (
-                        <tr>
+                    {this.props.articles.filter(article => article.ArticleType === "Na").map((filteredArticle, i) => (
+                        <tr key={i}>
                             <td>{filteredArticle.ArticleName}</td>
                             <td>{filteredArticle.Period}</td>
                             <td>{filteredArticle.DayTime}</td>
@@ -46,22 +48,26 @@ export class Tables extends Component {
                             <td>{filteredArticle.Money}</td>
                         </tr>
                     ))}
+                    </tbody>
                 </table>
             </div>
             <div className="right_table">
                 <table>
+                    <thead>
                     <tr>
                         <th className="vid">Вид</th>
                         <th className="period">Период</th>
                         <th className="summa">Сумма</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <tr className="bold">
                         <td>Удержано:</td>
                         <td></td>
-                        <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType === "Ud"))}</td>
+                        <td>{this.sumArticles(this.props.articles.filter(article => article.ArticleType === "Ud"))}</td>
                     </tr>
-                    {this.state.articles.filter(article => article.ArticleType === "Ud").map(filteredArticle => (
-                        <tr>
+                    {this.props.articles.filter(article => article.ArticleType === "Ud").map((filteredArticle,i) => (
+                        <tr key={i}>
                             <td>{filteredArticle.ArticleName}</td>
                             <td>{filteredArticle.Period}</td>
                             <td>{filteredArticle.Money}</td>
@@ -70,16 +76,25 @@ export class Tables extends Component {
                     <tr className="bold">
                         <td>Выплачено:</td>
                         <td></td>
-                        <td>{this.sumArticles(this.state.articles.filter(article => article.ArticleType === "Vi"))}</td>
+                        <td>{this.sumArticles(this.props.articles.filter(article => article.ArticleType === "Vi"))}</td>
                     </tr>
-                    {this.state.articles.filter(article => article.ArticleType === "Vi").map(filteredArticle => (
-                        <tr>
+                    {this.props.articles.filter(article => article.ArticleType === "Vi").map((filteredArticle, i) => (
+                        <tr key={i}>
                             <td>{filteredArticle.ArticleName}</td>
                             <td>{filteredArticle.Period}</td>
                             <td>{filteredArticle.Money}</td>
                         </tr>
                     ))}
+                    </tbody>
                 </table>
+                <div className="other-data">
+                    <div className="other-data-text">
+                        <p>Долг предприятия на начало: {this.props.otherData[0]}</p>
+                        <p className="bold">Долг предприятия на конец: {this.props.otherData[1]}</p>
+                    </div>
+                    <hr />
+                    <p>Общий облагаемый доход: {this.props.otherData[2]}</p>
+                </div>
             </div>
         </div>
     );

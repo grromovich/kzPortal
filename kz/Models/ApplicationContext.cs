@@ -6,6 +6,7 @@ namespace kz.Models
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Article> Articles { get; set; } = null!;
         public DbSet<Setting> Settings { get; set; } = null!;
+        public DbSet<BadLogin> BadLogins { get; set; } = null!;
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
@@ -16,6 +17,7 @@ namespace kz.Models
             modelBuilder.Entity<Article>().HasKey(v => v.TabelCode);
             modelBuilder.Entity<User>().HasKey(v => v.TabelCode);
             modelBuilder.Entity<Setting>().HasKey(v => v.TabelCode);
+            modelBuilder.Entity<BadLogin>().HasKey(v => v.TabelCode);
         }
     }
 }

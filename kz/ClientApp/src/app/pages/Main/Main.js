@@ -12,6 +12,7 @@ export class Main extends Component {
         this.state = {
             name: "",
             articles: [],
+            otherData: "",
             tabelCode: sessionStorage.getItem("TabelCode"),
 
             visibilitySettings: "hidden",
@@ -25,7 +26,8 @@ export class Main extends Component {
         sessionStorage.setItem("APIkey", "");
         window.location.assign('/');
     };
-    componentWillMount() {
+
+    componentDidMount() {
         this.GetData(this.state.tabelCode)
     }
     render() {
@@ -65,25 +67,35 @@ export class Main extends Component {
                 <div className="main">
                     <div className="main__container">
                         <h1>Расчетный листок</h1>
-                        <Tables articles={this.state.articles}/>
+                        <Tables articles={this.state.articles}
+                                otherData={this.state.otherData}
+                        />
                     </div>
                 </div>
             </div>
         )
     }
+
     async GetData(tabel) {
-        let response = await fetch('data',
+        fetch('data',
             {
                 method: "POST",
+                //withCrefentials: true,
+                crossorigin: true,
+                mode: "no-cors",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    TabelCode: sessionStorage.getItem("TabelCode"),
+                    TabelCode: tabel,
                 })
-            });
-        let data = await response.json();
-        console.log(data)
-        if (data !== false) {
-            this.setState({ name: data["Name"], articles: data["Articles"] })
-        }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                this.setState({ 
+                    name: data["Name"], 
+                    articles: data["Articles"],
+                    otherData: [data["BeforeDolg"], data["AfterDolg"], data["TotalDohod"]]
+                 })
+            })
     }
+
 };

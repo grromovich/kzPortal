@@ -21,17 +21,17 @@ th {
 
 tr {
     display: table-row;
-    background-color: white;
+    background-color: #F4F4F4;
 
     padding: 5px;
 }
 
-tr:nth-child(2n + 1) {
-    background-color: #F4F4F4;
+tbody tr:nth-child(2n + 1) { 
+    background-color: white;
     color: black;
 }
 
-tr:nth-child(1) {
+thead tr {
     height: 60px;
     background-color: #DE2C37;
 }
@@ -42,7 +42,7 @@ tr:nth-child(1) {
     }
 }
 
-tr > td:nth-child(1) {
+tr td:nth-child(1) {
     text-align: left;
 }
 
@@ -89,7 +89,8 @@ tr {
     font-weight: 400;
     line-height: normal;
 }
-tr:nth-child(1) {
+
+thead tr {
     color: #FFF;
     font-family: Inter;
     font-style: normal;
@@ -122,4 +123,26 @@ tr:nth-child(1) {
     tr:nth-child(1) {
         font-size: 15px;
     }
+}
+
+.other-data {
+    margin-top: 7px;
+    width: 100%;
+}
+
+.other-data p {
+    font-size: 13px;
+    margin: 0;
+}
+
+.other-data hr {
+    margin: 0;
+    padding: 0;
+    z-index: 0;
+}
+
+.other-data-text {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }

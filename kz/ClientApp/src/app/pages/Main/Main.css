@@ -142,6 +142,7 @@ li {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 
 .settings__container {
@@ -169,3 +170,4 @@ li {
 .settings__container > button {
     margin-top: 20px;
 }
+

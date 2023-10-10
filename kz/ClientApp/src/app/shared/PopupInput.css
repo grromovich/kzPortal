@@ -1,0 +1,62 @@
+.password-input {
+    width: 100%;
+    height: 75px;
+    border-radius: 5px;
+    border: 0;
+    background: #FFF;
+    padding: 10px;
+}
+
+.password-input::-webkit-outer-spin-button,
+.password-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.password-input[type='number'] {
+    -moz-appearance: textfield;
+}
+
+.password-input:focus {
+    box-shadow: 0 0 0 2.2px #333;
+}
+
+.password-input::placeholder {
+    font-size: 16px;
+}
+
+@media (min-width: 1920px) { 
+    .password-input {
+        height: 60px;
+        font-size: 1.2rem;
+    }
+}
+
+@media (min-width: 1440px) and (max-width: 1920px){ 
+    .password-input {
+        height: 53px;
+        font-size: 1.15rem;
+    }
+}
+
+@media (max-width: 1440px){ 
+    .password-input {
+        height: 35px;
+        font-size: 1.1rem;
+    }
+}
+
+.eye-password {
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    top: 50%;
+    left: 93%;
+    transform: translate(-50%, -50%);
+}
+
+.password__container {
+    position: relative;
+    width: 80%;
+    display: flex;
+    margin-top: 30px;
+}

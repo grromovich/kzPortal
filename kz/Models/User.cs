@@ -10,5 +10,6 @@ namespace kz.Models
         public double BeforeDolg { get; set; }
         public double AfterDolg { get; set; }
         public double TotalDohod { get; set; }
+        public DateTime Ban { get; set;}
     }
 }
