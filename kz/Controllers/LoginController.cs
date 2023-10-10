@@ -78,7 +78,7 @@ namespace kz.Controllers
                 if (user.Password == ToSHA256(data.Password))
                 {
                     await Response.WriteAsync("{\"APIkey\":\"" + ToSHA256(data.Password) + "\"}");
-                    db.BadLogins.Where(u => u.TabelCode == data.TabelCode).ExecuteDeleteAsync();
+                    db.BadLogins.Where(u => u.TabelCode == data.TabelCode).ExecuteDelete();
                 }
                 else
                 {
