@@ -1,78 +1,51 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./Home.css";
 import { NextButton } from "../../shared/NextButton";
 import { PopupInput } from "../../shared/PopupInput";
 
-export class Home extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            tabelcode: "",
-            password: "",
-            displayButton: "hidden",
-            validation: true,
-            numbertryies: null,
-            dateban: null,
-        };
 
-    }
+export function Home() {
+    const [tabelcode, setTabelcode] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-    /*useEffect(() => {
-        this.setState({displayButton: this.displayButton()});
-    }, []);*/
-
-    onButtonClick = () => {
-        this.ValidateTabelCode(this.state.tabelcode, this.state.password)
+    function onButtonClick() {
+        if (tabelcode.length === 0) {
+            setError("Заполните поле Табельный код")
+            return;
+        }
+        else if (tabelcode.length < 6) {
+            setTabelcode("")
+            setError("Количество символов в поле Табельный код должно быть не менее 6")
+            return;
+        }
+        else if (password.length === 0) {
+            setError("Заполните поле Пароль")
+            return;
+        }
+        else if (password.length < 6) {
+            setPassword("")
+            setError("Количество символов в поле Пароль должно быть не менее 6")
+            return;
+        }
+        ValidateTabelCode(tabelcode, password)
     };
 
-    displayButton() {
-        if(this.state.tabelcode.length >= 6 && this.state.password.length >= 6) {
-            return "visible";
-        }
-        else {
-            return "hidden";
+    function onEnterPressed(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            onButtonClick()
         }
     }
 
-    render() {
-        return (
-                <div className="popup">
-                    <div className="popup__container">
-                    <h1 className="validate-text">Вход</h1>
-                    <PopupInput
-                        onChange={(data) => this.setState({ tabelcode: data})}
-                        type={"number"}
-                        placeholder="Табельный код"
-                    />
-                    <PopupInput
-                        onChange={(data) => { this.setState({ password: data})}}
-                        onEnterPressed={this.onButtonClick}
-                        type={"password"}
-                        placeholder="Пароль"
-                    />
-                    {this.state.numbertryies &&
-                        <h2 className="wrong-code-text">Попыток для входа осталось: {this.state.numbertryies}</h2>
-                    }
-                    {this.state.dateban &&
-                        <h2 className="wrong-code-text">Попробуйте через {this.state.dateban} минут</h2>
-                    }
-                    <NextButton 
-                        displayButton = {() => this.state.displayButton} 
-                        onClick={ this.onButtonClick }
-                    />
-                    </div>
-                </div>
-        )
-    }
-
-    async ValidateTabelCode(code, password) {
+    async function ValidateTabelCode(code, password) {
         fetch('login',
             {
                 method: "POST",
                 //withCrefentials: true,
                 crossorigin: true,
                 mode: "no-cors",
-                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                headers: { "Accept": "application/json", "Content-Type": "application/json; charset=utf-8" },
                 body: JSON.stringify({
                     TabelCode: code,
                     Password: password,
@@ -85,24 +58,44 @@ export class Home extends Component {
                         sessionStorage.setItem("APIkey", data);
                         sessionStorage.setItem("TabelCode", code);
                         window.location.assign('/main');
+                        setTabelcode("")
+                        setPassword("")
                     }
-                    else if (data['NumberBadLogins'] != null) {
-                        this.setState({
-                            numbertryies: data['NumberBadLogins'],
-                            dateban: null,
-                        })
+                    else if (data['error'] != null) {
+                        setError(data['error'])
+                        setTabelcode("")
+                        setPassword("")
                     }
-                    else if (data['DateBan'] != null) {
-                        this.setState({
-                            dateban: data['DateBan'],
-                            numbertryies: null,
-                        })
-                    }
-                    
-                }
-                else {
-                    this.setState({ Validation: false })
                 }
             })
     }
-};
+
+    return (
+        <div className="popup" onKeyDown={onEnterPressed }>
+                <div className="popup__container">
+                <h1 className="validate-text">Вход</h1>
+                <PopupInput
+                    onChange={(data) => setTabelcode(data)}
+                    text={ tabelcode }
+                    type={"text"}
+                    placeholder="Табельный код"
+                    autoFocus = {true}
+                />
+                <PopupInput
+                    onChange={(data) => setPassword(data)}
+                    text={ password }
+                    onEnterPressed={onEnterPressed}
+                    type={"password"}
+                    placeholder="Пароль"
+                    autoFocus = {false}
+                />
+                {error &&
+                    <h2 className="wrong-code-text">{ error }</h2>
+                }
+                <NextButton 
+                    onClick={onButtonClick}
+                />
+            </div>
+        </div>
+    )
+}

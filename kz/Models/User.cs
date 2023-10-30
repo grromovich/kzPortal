@@ -11,5 +11,6 @@ namespace kz.Models
         public double AfterDolg { get; set; }
         public double TotalDohod { get; set; }
         public DateTime Ban { get; set;}
+        public int NumberBadLogins { get; set; }
     }
 }

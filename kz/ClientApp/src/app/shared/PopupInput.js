@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import "./PopupInput.css"
-import eyeImg from "../src/eye.svg";
-import krestEyeKrest from "../src/kresteye.svg";
+import eyeImg from "../assets/images/eye.png";
+import krestEyeImg from "../assets/images/kresteye.png";
+import userImg from "../assets/images/user.svg";
+import passwordImg from "../assets/images/password.svg";
 
 export class PopupInput extends Component {
     constructor(props) {
@@ -10,7 +12,8 @@ export class PopupInput extends Component {
             inputValue: "",
             begintype: this.props.type,
             type: this.props.type,
-            passwordImg: eyeImg,
+            displayEye: "visible",
+            displayEyeKrest: "hidden",
         };
     }
 
@@ -19,47 +22,68 @@ export class PopupInput extends Component {
         this.props.onChange(value);
     }
 
-    onEnterPressed(event) {
-        if(event.key === "Enter" && this.state.inputValue.length >= 6){
-            event.preventDefault();
-            this.props.onEnterPressed();
-        }
-    }
-
     showHide(t) {
         if (t.state.type === "password") {
             t.setState({
                 type: "text",
-                passwordImg: krestEyeKrest
+                displayEye: "hidden",
+                displayEyeKrest: "visible"
             });
         }
         else {
             t.setState({
                 type: "password",
-                passwordImg: eyeImg
+                displayEye: "visible",
+                displayEyeKrest: "hidden"
             });
         }
     }
 
     render() { 
         return (
-            <div className="password__container">
+            <div className="popup-input__container">
                 <input 
-                    autoFocus = { true }
+                    autoFocus = { this.props.autoFocus }
                     autoComplete='one-time-code'
-                    value = {this.state.inputValue}
-                    onChange={(e) =>  this.onChange(e.target.value)}
-                    onKeyDown={(e) => this.onEnterPressed(e)}
+                    value={this.props.text}
+                    onChange={(e) => this.onChange(e.target.value)}
+                    pattern={this.state.type === "text" && "/\d*"} 
                     placeholder={this.props.placeholder}
                     type={this.state.type}
                     className="password-input"
+                    maxlength="16"
                 />
+                {this.state.begintype !== "password" &&
+                <img 
+                    src={userImg} 
+                    alt=""
+                    className="start-img user-ico"
+                />}
                 {this.state.begintype === "password" &&
-                    <img
-                    src={this.state.passwordImg} alt=""
-                    className="eye-password"
-                    onClick={() => { this.showHide(this) } }
-                    />
+                <img 
+                    src={passwordImg} 
+                    alt=""
+                    className="start-img password-ico"
+                />}
+                {this.state.begintype === "password" &&
+                    <ul>
+                        <li>
+                            <img
+                                src={eyeImg} alt=""
+                                className="eye-password"
+                                onClick={() => { this.showHide(this) } }
+                                style={{visibility: this.state.displayEye}}
+                            />
+                        </li>
+                        <li>
+                            <img
+                                src={krestEyeImg} alt=""
+                                className="eye-password"
+                                onClick={() => { this.showHide(this) } }
+                                style={{visibility: this.state.displayEyeKrest}}
+                            />
+                        </li>
+                    </ul>
                 }
             </div>
         );

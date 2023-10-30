@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "./PasswordPopup.css";
-import krestImg from '../src/krest.svg';
+import krestImg from '../assets/images/krest.svg';
 
 export class PasswordPopup extends Component {
     constructor(props) {

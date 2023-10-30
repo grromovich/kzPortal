@@ -11,4 +11,33 @@
     line-height: normal;
     transition: all 0.2s;
     border: none;
+    box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.40);
+}
+
+.next-btn:active {
+    box-shadow: none;
+}
+
+@media (min-width: 1920px) {
+    .next-btn {
+        width: 218px;
+        font-size: 20px;
+        margin-top: 39px;
+    }
+}
+
+@media (min-width: 1440px) and (max-width: 1920px) {
+    .next-btn {
+        width: 184px;
+        font-size: 19px;
+        margin-top: 36px;
+    }
+}
+
+@media (max-width: 1440px) {
+    .next-btn {
+        width: 198px;
+        font-size: 18px;
+        margin-top: 30px;
+    }
 }

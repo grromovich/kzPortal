@@ -5,6 +5,10 @@
     border: 0;
     background: #FFF;
     padding: 10px;
+    outline:none;
+    padding-left: 30px;
+    padding-right: 40px;
+    font-family: "MontserratRegular";
 }
 
 .password-input::-webkit-outer-spin-button,
@@ -16,47 +20,81 @@
     -moz-appearance: textfield;
 }
 
-.password-input:focus {
-    box-shadow: 0 0 0 2.2px #333;
+.password-input[type="password"] {
+    font-family: "Inter";
+    letter-spacing: 2px;
+}
+
+.password-input[type="password"]::placeholder {
+    letter-spacing: normal;
 }
 
 .password-input::placeholder {
-    font-size: 16px;
+    font-family: "MontserratMedium";
+    font-size: 15px;
 }
+
+
 
 @media (min-width: 1920px) { 
     .password-input {
         height: 60px;
-        font-size: 1.2rem;
+        font-size: 1.15rem;
     }
 }
 
 @media (min-width: 1440px) and (max-width: 1920px){ 
     .password-input {
         height: 53px;
-        font-size: 1.15rem;
+        font-size: 1.1rem;
     }
 }
 
 @media (max-width: 1440px){ 
     .password-input {
         height: 35px;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 }
 
 .eye-password {
     position: absolute;
+    left: 0;
+    top: 0;
     width: 21px;
     height: 21px;
+    transition: all 0.1s;
+}
+
+.start-img {
+    position: absolute;
     top: 50%;
-    left: 93%;
+    left: 5%;
     transform: translate(-50%, -50%);
 }
 
-.password__container {
+.user-ico {
+    width: 16px;
+    height: 16px;
+}
+
+.password-ico {
+    width: 20px;
+    height: 20px;
+}
+
+.popup-input__container {
     position: relative;
     width: 80%;
     display: flex;
     margin-top: 30px;
+}
+
+.popup-input__container ul {
+    position: absolute;
+    top: 50%;
+    left: 93%;
+    transform: translate(-50%, -50%);
+    width: 21px;
+    height: 21px;
 }

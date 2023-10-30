@@ -12,6 +12,7 @@ BeforeDolg float NOT NULL,
 AfterDolg float NOT NULL,
 TotalDohod float NOT NULL,
 Ban datetime2,
+NumberBadLogins int,
 );
 
 CREATE TABLE [Articles] (
@@ -27,7 +28,6 @@ DayTime int,
 HourTime int,
 Oplacheno int,
 Money float NOT NULL,
-FOREIGN KEY (TabelCode)  REFERENCES Users (TabelCode)
 );
 
 /* Не трогать! Челы вылетят из аков*/
@@ -42,8 +42,8 @@ TabelCode varchar(6) NOT NULL,
 Data datetime,
 );
 
-INSERT INTO [Users] VALUES ('000000', N'Василий Васильев Васильевич', '149bfb5f0ba194f684cd8d068d42eee34c41a20cda0a5f54e2a928212e5ccb48', '', '', '', '01/01/0001 00:00:00');
-INSERT INTO [Users] VALUES ('000001', N'Петр Петров Петрович',	'37f3d0fdecf217f8e8355a8776be94083586d86ec4af82eab24fb5bbbb94f31e', '', '', '', '01/01/0001 00:00:00');
+INSERT INTO [Users] VALUES ('000000', N'Василий Васильев Васильевич', '149bfb5f0ba194f684cd8d068d42eee34c41a20cda0a5f54e2a928212e5ccb48', '', '', '', '01/01/0001 00:00:00', 0);
+INSERT INTO [Users] VALUES ('000001', N'Петр Петров Петрович',	'37f3d0fdecf217f8e8355a8776be94083586d86ec4af82eab24fb5bbbb94f31e', '', '', '', '01/01/0001 00:00:00', 0);
 
 INSERT INTO [Articles] VALUES ('000000', 'Na', N'Оплата по окладу', N'месяц год',  26, 156, 130, 29013);
 INSERT INTO [Articles] VALUES ('000000', 'Na', N'Районный коэффициент ', N'месяц год',  null, null, 130, 5551.95);
