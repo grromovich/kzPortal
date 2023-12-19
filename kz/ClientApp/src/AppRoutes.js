@@ -1,11 +1,16 @@
 import { Home } from "./app/pages/Home/Home";
 import { Main } from "./app/pages/Main/Main"
 import { AdminHome } from "./app/pages/AdminHome/AdminHome"
-import { Admin } from "./app/pages/Admin/Admin"
+import { AdminInfo } from "./app/pages/Admin/AdminInfo"
+import { Between } from "./app/pages/Between/Between"
 const AppRoutes = [
   {
     index: true,
     element: <Home />
+  },
+  {
+    path: "/between",
+    element: <Between />
   },
   {
       path: "/main",
@@ -17,7 +22,7 @@ const AppRoutes = [
 },
 {
   path: "/admininfo",
-  element: <Admin />
+  element: <AdminInfo />
 },
 ];
 

@@ -6,7 +6,6 @@ import {PopupInput} from "../shared/PopupInput";
 
 export function PasswordPopup({ visibilityPasswordPopup, onClose }) {
 
-    console.log(visibilityPasswordPopup)
     const [oldPassword, setOldPassword] = useState("")
     const [newPassword1, setNewPassword1] = useState("")
     const [newPassword2, setNewPassword2] = useState("")

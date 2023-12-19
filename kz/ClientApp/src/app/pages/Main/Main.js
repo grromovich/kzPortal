@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect} from 'react';
 import "./Main.css";
-import settingsImg from '../../assets/images/settings.svg';
-import exitImg from '../../assets/images/exit.svg';
-import krestImg from '../../assets/images/krest.svg';
+import printerImg from '../../assets/images/printer.svg';
+import lockImg from '../../assets/images/lock.svg';
+//import exitImg from '../../assets/images/exit.svg';
 import { Tables } from "../../components/Tables";
 import { PasswordPopup } from "../../components/PasswordPopup";
 
@@ -13,7 +13,6 @@ export function Main() {
     const [articles, setArticles] = useState([])
     const [otherData, setOtherData] = useState([])
     const [visibilityPasswordPopup, setVisibilityPasswordPopup] = useState("hidden")
-    const settingsRef = useRef(null);
 
     function onExitClick() {
         sessionStorage.setItem("TabelCode", "");
@@ -46,46 +45,38 @@ export function Main() {
     }
     return (
         <div className="wrapper">
-            <div className="settings" ref={ settingsRef }>
-                <img className="krest"
-                    src={krestImg} alt=""
-                    onClick={() => {
-                        settingsRef.current.classList.remove("move-to-left");
-                    }} />
-                <div className="settings__container">
-                    <h1>Настройки</h1>
-                    <button
-                        onClick={() => {
-                            setVisibilityPasswordPopup("visible")
-                        }}
-                    >
-                        Сменить пароль
-                    </button>
-                </div>
-            </div>
             <PasswordPopup
                 visibilityPasswordPopup={visibilityPasswordPopup}
                 onClose={() => setVisibilityPasswordPopup("hidden")}
             />
-            <div className="header">
-                <div className="header__container">
-                    <ul className="header_menu">
+            <div className="main-header">
+                <div className="main-header__container">
+                    <ul className="main-header_menu">
                         <li>{name}</li>
                         <li>Таб. номер: {tabelCode}</li>
                         <li><img
-                            className="img_settings"
-                            src={settingsImg}
+                            className="header-img"
+                            src={printerImg}
                             alt=""
                             onClick={() => {
-                                setTimeout(() => settingsRef.current.classList.add("move-to-left"), 100)
+                                // Принтиться документ
                             }} />
                         </li>
-                        <li onClick={onExitClick} > <img className="img_exit" src={exitImg} alt="" /></li>
+                        <li><img
+                            className="header-img"
+                            src={lockImg}
+                            alt=""
+                            onClick={() => {
+                                setVisibilityPasswordPopup("visible")
+                            }} />
+                        </li>
+                        <li onClick={onExitClick}>Выйти</li>
+                        
                     </ul>
                 </div>
             </div>
-            <div className="main">
-                <div className="main__container">
+            <div className="main-main">
+                <div className="main-main__container">
                     <h1>Расчетный листок</h1>
                     <Tables articles={articles}
                         otherData={otherData}

@@ -1,0 +1,78 @@
+﻿.btw-main {
+    width: 100%;
+    height: calc(100vh - 80px - 30px);
+    font-family: 'MontserratRegular'
+}
+
+.btw-main__container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.showprint-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 115px;
+    margin-bottom: 110px;
+}
+
+.showprint-buttons button {
+    width: 197px;
+    height: 98px;
+    font-size: 20px;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    border: none;
+    box-shadow: 0px 5px 3px 0px rgba(0, 0, 0, 0.35);
+}
+
+.showprint-buttons img {
+    width: 30px;
+    height: 30px;
+}
+
+.show-button {
+    background: #DE2C37;
+}
+
+.print-button {
+    background: #000;
+}
+
+.showprint-buttons button:active {
+    box-shadow: none
+}
+
+.btw-loader {
+    width: 30px;
+    padding: 6px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #ffffff;
+    --_m: 
+      conic-gradient(#0000 15%,#000),
+      linear-gradient(#000 0 0) content-box;
+    -webkit-mask: var(--_m);
+            mask: var(--_m);
+    -webkit-mask-composite: source-out;
+            mask-composite: subtract;
+    animation: l3 1s infinite linear;
+  }
+  @keyframes l3 {to{transform: rotate(1turn)}}
+  
+  .btw-right16 {
+    margin-right: 15px;
+  }
+
+  .bxsdw-none {
+    box-shadow: none;
+  }

@@ -45,7 +45,7 @@ export class PopupInput extends Component {
                 <input 
                     style={{paddingLeft: this.state.paddingLeft}}
                     autoFocus={this.props.autoFocus}
-                    autoComplete='one-time-code'
+                    autoComplete='off'
                     value={this.props.text}
                     onChange={(e) => this.onChange(e.target.value)}
                     pattern={this.state.type === "text" ? "/\d*" : ""} /* eslint-disable-line */

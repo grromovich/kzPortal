@@ -62,7 +62,7 @@ export function Home() {
                     if (data['APIkey'] != null) {
                         sessionStorage.setItem("APIkey", data['APIkey']);
                         sessionStorage.setItem("TabelCode", code);
-                        window.location.assign('/main');
+                        window.location.assign('/between');
                         setTabelcode("")
                         setPassword("")
                     }

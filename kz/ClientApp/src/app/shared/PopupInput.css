@@ -34,14 +34,14 @@
 
 @media (min-width: 1920px) { 
     .password-input {
-        height: 60px;
+        height: 45px;
         font-size: 1.15rem;
     }
 }
 
 @media (min-width: 1440px) and (max-width: 1920px){ 
     .password-input {
-        height: 53px;
+        height: 40px;
         font-size: 1.1rem;
     }
 }

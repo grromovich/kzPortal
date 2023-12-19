@@ -1,9 +1,4 @@
-﻿* {
-    margin: 0;
-    padding: 0;
-}
-
-.popup {
+﻿.popup {
     position: absolute;
     width: 516px;
     height: 477px;
