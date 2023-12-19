@@ -16,10 +16,6 @@
     -webkit-appearance: none;
 }
 
-.password-input[type='number'] {
-    -moz-appearance: textfield;
-}
-
 .password-input[type="password"] {
     font-family: "Inter";
     letter-spacing: 2px;
@@ -87,7 +83,6 @@
     position: relative;
     width: 80%;
     display: flex;
-    margin-top: 30px;
 }
 
 .popup-input__container ul {
@@ -98,3 +93,4 @@
     width: 21px;
     height: 21px;
 }
+

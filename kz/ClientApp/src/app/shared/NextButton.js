@@ -9,7 +9,10 @@ export class NextButton extends Component {
                 style={{ visibility: this.props.displayButton}}
                 onClick={ this.props.onClick }
                 className="next-btn">
-                    Войти
+                    {   this.props.isLoading ?
+                        <span className="loader"></span> :
+                        'Далее'
+                    }
             </button>
         </div>
         );

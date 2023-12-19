@@ -1,4 +1,5 @@
-﻿using kz.Models;
+﻿using kz.Controllers;
+using kz.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +16,8 @@ namespace kz.Controllers
         public class JsonData
         {
             public string? APIkey { get; set; }
-            public string? TabelCode { get; set; }
-            public string? Password { get; set; }
+            public string? OldPassword { get; set; }
+            public string? NewPassword { get; set; }
         }
 
         [HttpPost]
@@ -30,15 +31,32 @@ namespace kz.Controllers
                 var body = await reader.ReadToEndAsync();
                 data = JsonSerializer.Deserialize<JsonData>(body);
             }
-
-            User? user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == data.TabelCode);
+            Setting? setting = db.Settings.FirstOrDefault(u => u.APIkey == data.APIkey);
+            User? user = db.Users.FirstOrDefault(u => u.TabelCode == setting.TabelCode);
             if (user != null)
             {
-                await Response.WriteAsync("true");
+                if (user.Password == LoginController.ToSHA256(data.OldPassword))
+                {
+                    if(data.NewPassword.Length > 5)
+                    {
+                        user.Password = LoginController.ToSHA256(data.NewPassword);
+                        db.Users.Update(user);
+                        db.SaveChanges();
+                        await Response.WriteAsJsonAsync(true);
+                    }
+                    else
+                    {
+                        await Response.WriteAsJsonAsync(new { Error = "Ошибка смены пароля" });
+                    }
+                }
+                else
+                {
+                    await Response.WriteAsJsonAsync(new { Error = "Ошибка смены пароля" });
+                }
             }
             else
             {
-                await Response.WriteAsync("false");
+                await Response.WriteAsJsonAsync(new { Error = "Ошибка смены пароля 1" });
             }
         }
 

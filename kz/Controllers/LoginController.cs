@@ -35,6 +35,33 @@ namespace kz.Controllers
             return sb.ToString();
         }
 
+        public int GetNumberBadLogins(List<BadLogin> listBadLogins, DateTime LastLoginDate = default(DateTime)) {
+            int number = 0;
+            int n = 3;
+            if (listBadLogins.Count < 3)
+            {
+                n = listBadLogins.Count;
+            }
+            for (int i = listBadLogins.Count - 1; i > listBadLogins.Count - n; i--)
+            {
+                if((DateTime.Now - listBadLogins[i].BadLoginDate).Duration().Minutes < 7)
+                {
+                    if(LastLoginDate != default(DateTime))
+                    {
+                        if((LastLoginDate - listBadLogins[i].BadLoginDate).Duration().Minutes > 0)
+                        {
+                            number++;
+                        }
+                    }
+                    else
+                    {
+                        number++;
+                    }
+                }
+            }
+            return number;
+        }
+
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
@@ -50,13 +77,12 @@ namespace kz.Controllers
             User? user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == data.TabelCode);
             if (user != null)
             {
-                if (user.Ban != DateTime.MinValue)
+                if (user.BanDate != DateTime.MinValue)
                 {
-                    TimeSpan minutes1 = (DateTime.Now - user.Ban).Duration();
+                    TimeSpan minutes1 = (DateTime.Now - user.BanDate).Duration();
                     if (minutes1.Minutes > 6)
                     {
-                        user.Ban = DateTime.MinValue;
-                        user.NumberBadLogins = 0;
+                        user.BanDate = DateTime.MinValue;
                         db.Users.Update(user);
                         db.SaveChanges();
                     }
@@ -68,35 +94,63 @@ namespace kz.Controllers
                 }
                 if (user.Password == ToSHA256(data.Password))
                 {
-                    await Response.WriteAsync("{\"APIkey\":\"" + ToSHA256(data.Password) + "\"}");
-                    user.NumberBadLogins = 0;
-                    db.Users.Update(user);
+                    string APIkey = ToSHA256(new Random().Next().ToString());
+                    var UserSettings = db.Settings.AsNoTracking().FirstOrDefault(s => s.TabelCode ==  user.TabelCode);
+                    if (UserSettings != null)
+                    {
+                        UserSettings.APIkey = APIkey;
+                        UserSettings.APIkeyDate = DateTime.Now;
+                        UserSettings.LastLoginDate = DateTime.Now;
+                        db.Settings.Update(UserSettings);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        Setting newAPIkey = new Setting
+                        {
+                            TabelCode = user.TabelCode,
+                            APIkey = APIkey,
+                            APIkeyDate = DateTime.Now,
+                            LastLoginDate = DateTime.Now,
+                        };
+                        db.Settings.Add(newAPIkey);
+                        db.SaveChanges();
+                    }
                     db.SaveChanges();
+                    await Response.WriteAsync("{\"APIkey\":\"" + APIkey + "\"}");
                 }
                 else
                 {
                     BadLogin login = new BadLogin
                     {
                         TabelCode = user.TabelCode,
-                        Data = DateTime.Now
+                        BadLoginDate = DateTime.Now
                     };
                     db.BadLogins.Add(login);
-                    user.NumberBadLogins += 1;
                     db.Users.Update(user);
                     db.SaveChanges();
 
-
-                    if (user.NumberBadLogins >=3)
+                    Setting? LastLoginDate = db.Settings.FirstOrDefault(u => u.TabelCode == user.TabelCode);
+                    int NumberBadLogins = 0;
+                    if (LastLoginDate != null)
                     {
-                        user.Ban = DateTime.Now;
+                        NumberBadLogins = GetNumberBadLogins(db.BadLogins.ToList(), LastLoginDate.LastLoginDate);
+                    }
+                    else
+                    {
+                        NumberBadLogins = GetNumberBadLogins(db.BadLogins.ToList());
+                    }
+
+                    if (NumberBadLogins >=3)
+                    {
+                        user.BanDate = DateTime.Now;
                         db.Users.Update(user);
                         db.SaveChanges();
                         await Response.WriteAsJsonAsync(new { Error = "Попробуйте через " + 7 + " минут" });
-                        }
+                    }
                     else
                     {
-                        await Response.WriteAsJsonAsync(new { Error= "Неверный пароль. Осталось попыток: " + (3 - user.NumberBadLogins)});
-                        //"{\"Error\": \"Попыток для входа осталось: " + (3 - user.NumberBadLogins) + "\"}"
+                        await Response.WriteAsJsonAsync(new { Error= "Неверный пароль. Осталось попыток: " + (3 - NumberBadLogins) });
                     }
                 }
             }

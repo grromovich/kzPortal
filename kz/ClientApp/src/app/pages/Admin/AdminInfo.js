@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import "./Main.css";
+import "./Admin.css";
 import settingsImg from '../../assets/images/settings.svg';
 import exitImg from '../../assets/images/exit.svg';
 import krestImg from '../../assets/images/krest.svg';
 import { Tables } from "../../components/Tables";
 import { PasswordPopup } from "../../components/PasswordPopup";
 
-export function Main() {
+export function AdminInfo() {
 
     const tabelCode = sessionStorage.getItem("TabelCode")
     const [name, setName] = useState("")
@@ -77,7 +77,7 @@ export function Main() {
                             src={settingsImg}
                             alt=""
                             onClick={() => {
-                                setTimeout(() => settingsRef.current.classList.add("move-to-left"), 100)
+                                setTimeout(() => settingsRef.current.classList.add("move-to-left"), 300)
                             }} />
                         </li>
                         <li onClick={onExitClick} > <img className="img_exit" src={exitImg} alt="" /></li>

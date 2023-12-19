@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import "./PopupInput.css"
 import eyeImg from "../assets/images/eye.png";
 import krestEyeImg from "../assets/images/kresteye.png";
-import userImg from "../assets/images/user.svg";
-import passwordImg from "../assets/images/password.svg";
 
 export class PopupInput extends Component {
     constructor(props) {
@@ -14,6 +12,8 @@ export class PopupInput extends Component {
             type: this.props.type,
             displayEye: "visible",
             displayEyeKrest: "hidden",
+            paddingLeft: this.props.ico ? "30px" : "15px",
+            displayLeftImg: this.props.displayLeftImg
         };
     }
 
@@ -43,36 +43,45 @@ export class PopupInput extends Component {
         return (
             <div className="popup-input__container">
                 <input 
-                    autoFocus = { this.props.autoFocus }
+                    style={{paddingLeft: this.state.paddingLeft}}
+                    autoFocus={this.props.autoFocus}
                     autoComplete='one-time-code'
                     value={this.props.text}
                     onChange={(e) => this.onChange(e.target.value)}
-                    pattern={this.state.type === "text" && "/\d*"} 
+                    pattern={this.state.type === "text" ? "/\d*" : ""} /* eslint-disable-line */
                     placeholder={this.props.placeholder}
                     type={this.state.type}
                     className="password-input"
-                    maxlength="16"
+                    maxLength={this.props.maxlength}
                 />
-                {this.state.begintype !== "password" &&
-                <img 
-                    src={userImg} 
-                    alt=""
-                    className="start-img user-ico"
-                />}
-                {this.state.begintype === "password" &&
-                <img 
-                    src={passwordImg} 
-                    alt=""
-                    className="start-img password-ico"
-                />}
-                {this.state.begintype === "password" &&
+                {this.props.ico && 
+                    <>
+                    {this.state.begintype !== "password" &&
+                        <img
+                            src={this.props.ico}
+                            alt=""
+                            className="start-img user-ico"
+                        />
+                    }
+                    {this.state.begintype === "password" &&
+                        <img
+                            src={this.props.ico}
+                            alt=""
+                            className="start-img password-ico"
+                        />}
+                    </>
+                }
+                
+                {(this.state.begintype === "password") &&
                     <ul>
                         <li>
                             <img
                                 src={eyeImg} alt=""
                                 className="eye-password"
                                 onClick={() => { this.showHide(this) } }
-                                style={{visibility: this.state.displayEye}}
+                                style={{visibility: this.state.displayEye,
+                                        display: this.props.displayLeftImg ? "block" : "none"}}
+                                
                             />
                         </li>
                         <li>
@@ -80,7 +89,8 @@ export class PopupInput extends Component {
                                 src={krestEyeImg} alt=""
                                 className="eye-password"
                                 onClick={() => { this.showHide(this) } }
-                                style={{visibility: this.state.displayEyeKrest}}
+                                style={{visibility: this.state.displayEyeKrest,
+                                    display: this.props.displayLeftImg ? "block" : "none"}}
                             />
                         </li>
                     </ul>

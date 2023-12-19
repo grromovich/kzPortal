@@ -1,27 +1,16 @@
 import React, { useState } from 'react';
-import "./Home.css";
+import "./AdminHome.css";
 import { NextButton } from "../../shared/NextButton";
 import { PopupInput } from "../../shared/PopupInput";
-import userImg from "../../assets/images/user.svg";
 import passwordImg from "../../assets/images/password.svg";
 
-export function Home() {
-    const [tabelcode, setTabelcode] = useState("");
+export function AdminHome() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     function onButtonClick() {
-        if (tabelcode.length === 0) {
-            setError("Заполните поле Табельный код")
-            return;
-        }
-        else if (tabelcode.length < 6) {
-            setTabelcode("")
-            setError("Количество символов в поле Табельный код должно быть не менее 6")
-            return;
-        }
-        else if (password.length === 0) {
+        if (password.length === 0) {
             setError("Заполните поле Пароль")
             return;
         }
@@ -32,7 +21,7 @@ export function Home() {
         }
         setError("")
         setIsLoading(true)
-        ValidateTabelCode(tabelcode, password)
+        ValidateTabelCode(password)
     };
 
     function onEnterPressed(event) {
@@ -42,8 +31,8 @@ export function Home() {
         }
     }
 
-    async function ValidateTabelCode(code, password) {
-        fetch('login',
+    async function ValidateTabelCode(password) {
+        fetch('adminlogin',
             {
                 method: "POST",
                 //withCrefentials: true,
@@ -51,7 +40,6 @@ export function Home() {
                 mode: "no-cors",
                 headers: { "Accept": "application/json", "Content-Type": "application/json; charset=utf-8" },
                 body: JSON.stringify({
-                    TabelCode: code,
                     Password: password,
                 })
             })
@@ -61,14 +49,11 @@ export function Home() {
                 if (data !== false) {
                     if (data['APIkey'] != null) {
                         sessionStorage.setItem("APIkey", data['APIkey']);
-                        sessionStorage.setItem("TabelCode", code);
-                        window.location.assign('/main');
-                        setTabelcode("")
+                        window.location.assign('/admininfo');
                         setPassword("")
                     }
                     else if (data['error'] != null) {
                         setError(data['error'])
-                        setTabelcode("")
                         setPassword("")
                     }
                 }
@@ -78,16 +63,7 @@ export function Home() {
     return (
         <div className="popup" onKeyDown={onEnterPressed }>
                 <div className="popup__container">
-                <h1 className="validate-text">Вход</h1>
-                <PopupInput
-                    onChange={(data) => setTabelcode(data)}
-                    text={tabelcode}
-                    type={"text"}
-                    placeholder="Табельный код"
-                    autoFocus={true}
-                    maxlength={6}
-                    ico={userImg}
-                />
+                <h1 className="validate-text">Админ-панель</h1>
                 <PopupInput
                     onChange={(data) => setPassword(data)}
                     text={password}
