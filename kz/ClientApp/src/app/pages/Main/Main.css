@@ -33,7 +33,7 @@ body {
 
     margin-bottom: 30px;
 
-    font-family: 'MontserratMedium';
+    
     font-size: 16px;
 }
 
@@ -78,7 +78,7 @@ body {
 .main-main {
     background-color: #ffffff;
     width: 100%;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 80px - 30px);
 }
 
 .main-main__container {
@@ -171,3 +171,73 @@ body {
     margin-top: 20px;
 }
 
+.exit-popup {
+    width: 522px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    border-radius: 7px;
+    border: 1px solid #9A9A9A;
+
+    background-color: white;
+}
+
+.exit-popup__container {
+    width: 70%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.exit-popup h1 {
+    font-size: 23px;
+    text-align: center;
+    margin: 0;
+    font-family: 'MontserratMedium';
+}
+
+.exit-popup p {
+    margin-top: 26px;
+    margin-bottom: 0;
+    font-family: 'MontserratRegular';
+}
+
+.exit-popup-buttons {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: row;
+    gap: 85px;
+    align-self: center;
+    font-family: 'MontserratRegular';
+}
+
+.exit-popup-buttons button{
+    width: 150px;
+    height: 35px;
+    border-radius: 7px;
+    text-align: center;
+    color: white;
+    border: none;
+    font-size: 16px;
+}
+
+.exit-popup-buttons button:first-child{
+    background: #DE2C37;
+}
+
+
+.exit-popup-buttons button:last-child{
+    background: #9F9F9F;
+}
+
+ul {
+    list-style: none;
+}

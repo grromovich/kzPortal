@@ -69,10 +69,6 @@
   }
   @keyframes l3 {to{transform: rotate(1turn)}}
   
-  .btw-right16 {
-    margin-right: 15px;
-  }
-
   .bxsdw-none {
     box-shadow: none;
   }

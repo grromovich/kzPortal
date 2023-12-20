@@ -13,6 +13,7 @@ export function Main() {
     const [articles, setArticles] = useState([])
     const [otherData, setOtherData] = useState([])
     const [visibilityPasswordPopup, setVisibilityPasswordPopup] = useState("hidden")
+    const [visibilityExitPopup, setVisibilityExitPopup] = useState("hidden")
 
     function onExitClick() {
         sessionStorage.setItem("TabelCode", "");
@@ -49,6 +50,18 @@ export function Main() {
                 visibilityPasswordPopup={visibilityPasswordPopup}
                 onClose={() => setVisibilityPasswordPopup("hidden")}
             />
+            <div className="overlay" style={{ visibility: visibilityExitPopup }}>
+                <div class="exit-popup" style={{visibility: visibilityExitPopup}}>
+                    <div class="exit-popup__container">
+                        <h1>Выход</h1>
+                        <p>Вы действительно хотите выйти?</p>
+                        <div class="exit-popup-buttons">
+                            <button onClick={onExitClick}>Выйти</button>
+                            <button onClick={()=>{setVisibilityExitPopup("hidden")}}>Отмена</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div className="main-header">
                 <div className="main-header__container">
                     <ul className="main-header_menu">
@@ -70,7 +83,7 @@ export function Main() {
                                 setVisibilityPasswordPopup("visible")
                             }} />
                         </li>
-                        <li onClick={onExitClick}>Выйти</li>
+                        <li onClick={()=>{setVisibilityExitPopup("visible")}}>Выйти</li>
                         
                     </ul>
                 </div>
