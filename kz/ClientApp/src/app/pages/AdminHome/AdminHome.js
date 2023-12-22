@@ -70,7 +70,7 @@ export function AdminHome() {
                     onEnterPressed={onEnterPressed}
                     type={"password"}
                     placeholder="Пароль"
-                    autoFocus={false}
+                    autoFocus={true}
                     maxlength={25}
                     ico={passwordImg}
                 />

@@ -9,29 +9,29 @@
 
 
 
-table {
+.main-table table {
     border-collapse: collapse;
 }
 
-th {
+.main-table th {
     text-align: center;
 }
 
 
 
-tr {
+.main-table tr {
     display: table-row;
     background-color: #F4F4F4;
 
     padding: 5px;
 }
 
-tbody tr:nth-child(2n + 1) { 
+.main-table tbody tr:nth-child(2n + 1) { 
     background-color: white;
     color: black;
 }
 
-thead tr {
+.main-table thead tr {
     height: 60px;
     background-color: #DE2C37;
 }
@@ -42,11 +42,11 @@ thead tr {
     }
 }
 
-tr td:nth-child(1) {
+.main-table tr td:nth-child(1) {
     text-align: left;
 }
 
-td {
+.main-table td {
     padding: 5px;
     border: 2px solid #CCC;
     text-align: center;
@@ -58,7 +58,7 @@ td {
 
 
 
-th {
+.main-table th {
     border: 2px solid #CCC;
 }
 
@@ -82,7 +82,7 @@ th {
 
 /* FONTS FOR TABLE*/
 
-tr {
+.main-table tr {
     color: #000;
     font-family: Inter;
     font-style: normal;
@@ -90,7 +90,7 @@ tr {
     line-height: normal;
 }
 
-thead tr {
+.main-table thead tr {
     color: #FFF;
     font-family: Inter;
     font-style: normal;
@@ -99,28 +99,28 @@ thead tr {
 }
 
 @media (min-width: 1920px) { 
-    tr {
+    .main-table tr {
         font-size: 17px;
     }
-    tr:nth-child(1) {
+    .main-table tr:nth-child(1) {
         font-size: 17px;
     }
 }
 
 @media (min-width: 1440px) and (max-width: 1920px){ 
-    tr {
+    .main-table tr {
         font-size: 15px;
     }
-    tr:nth-child(1) {
+    .main-table tr:nth-child(1) {
         font-size: 16px;
     }
 }
 
 @media (max-width: 1440px){ 
-    tr {
+    .main-table tr {
         font-size: 14px;
     }
-    tr:nth-child(1) {
+    .main-table tr:nth-child(1) {
         font-size: 15px;
     }
 }

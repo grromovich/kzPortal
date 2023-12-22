@@ -14,6 +14,7 @@ export function Main() {
     const [otherData, setOtherData] = useState([])
     const [visibilityPasswordPopup, setVisibilityPasswordPopup] = useState("hidden")
     const [visibilityExitPopup, setVisibilityExitPopup] = useState("hidden")
+    const [isLoadPrint, setisLoadPrint] = useState(false)
 
     function onExitClick() {
         sessionStorage.setItem("TabelCode", "");
@@ -67,13 +68,15 @@ export function Main() {
                     <ul className="main-header_menu">
                         <li>{name}</li>
                         <li>Таб. номер: {tabelCode}</li>
-                        <li><img
-                            className="header-img"
-                            src={printerImg}
-                            alt=""
-                            onClick={() => {
-                                // Принтиться документ
-                            }} />
+                        <li>{ !isLoadPrint ?
+                                <img
+                                className="header-img"
+                                src={printerImg}
+                                alt=""
+                                onClick={() => { setisLoadPrint(!isLoadPrint) }} /> :
+                                <div className="main-loader" onClick={()=>{setisLoadPrint(!isLoadPrint)}}></div>
+                            }
+                            
                         </li>
                         <li><img
                             className="header-img"
@@ -84,7 +87,6 @@ export function Main() {
                             }} />
                         </li>
                         <li onClick={()=>{setVisibilityExitPopup("visible")}}>Выйти</li>
-                        
                     </ul>
                 </div>
             </div>

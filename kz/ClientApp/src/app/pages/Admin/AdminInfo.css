@@ -1,0 +1,146 @@
+.admin-table {
+    width: 903px;
+}
+
+.admin-table thead {
+    background: #DE2C37;
+    border: 1px solid #DE2C37;
+    color: white;
+    font-size: 14px;
+    font-family: 'MontserratRegular';
+    height: 48px;
+    border-radius: 3px 3px 0px 0px;
+}
+
+.admin-table tbody {
+    position: relative;
+}
+
+.admin-table th{
+    text-align: center;
+    width: 150px;
+}
+
+.admin-table th:first-child{
+    text-align: start;
+    padding-left: 15px;
+    width: 270px;
+}
+
+.admin-table th:last-child{
+    text-align: start;
+    padding-left: 15px;
+    width: calc(100% - 270px - 2 * 150px);
+}
+
+.admin-info-popup {
+    width: 698px;
+    height: 540px;
+    background-color: white;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.admin-info-popup .krest {
+    top: 5%;
+}
+
+.admin-popup__container {
+    width: 90%;
+    height: 90%;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-popup__container > h1 {
+    font-size: 23px;
+    text-align: center;
+}
+
+.admin-info-frame {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.admin-info-frame table {
+    margin: 0 auto;
+    background: #F5F5F5;
+    text-align: center;
+}
+
+.admin-info-frame table tr{
+    
+    height: 35px;
+    border: 1px solid #D9D9D9;
+}
+
+.admin-info-frame table th, .admin-info-frame table td{
+    border: 1px solid #D9D9D9;
+    width: 300px
+}
+
+.admin-table-error {
+    font-size: 20px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%);
+    text-align: center;
+    margin-top: 100px;
+}
+
+.admin-input-group input {
+    width: 280px;
+    height: 35px;
+    border-radius: 7px;
+    background: #E0E0E0;
+    border: none;
+    padding-left: 35px;
+    outline: none;
+}
+
+.admin-input-group {
+    position: relative;
+}
+
+.admin-input-group .img-group {
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 7%;
+}
+
+.admin-table-block-text {
+    font-size: 18px;
+    text-align: center;
+}
+
+.admin-info-popup .krest img{
+    width: 18px;
+    height: 18px;
+    
+}
+
+.admin-info-popup .img-group {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+}
+
+.admin-input-group .img-group {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+}
+
+.admin-input-group .img-group img {
+    width: 15px;
+    height: 15px;
+}

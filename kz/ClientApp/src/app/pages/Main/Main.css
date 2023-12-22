@@ -59,6 +59,7 @@ body {
 
 .main-header_menu li {
     display: flex;
+    user-select: none;
 }
 
 .main-header_menu li:last-child {
@@ -173,7 +174,7 @@ body {
 
 .exit-popup {
     width: 522px;
-    height: 200px;
+    height: 185px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -205,7 +206,7 @@ body {
 }
 
 .exit-popup p {
-    margin-top: 26px;
+    margin-top: 18px;
     margin-bottom: 0;
     font-family: 'MontserratRegular';
 }
@@ -241,3 +242,22 @@ body {
 ul {
     list-style: none;
 }
+
+.main-loader {
+    user-select: none;
+    margin-left: 2px;
+    width: 23px;
+    padding: 3px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: black;
+    --_m: 
+      conic-gradient(#0000 15%,#000),
+      linear-gradient(#000 0 0) content-box;
+    -webkit-mask: var(--_m);
+            mask: var(--_m);
+    -webkit-mask-composite: source-out;
+            mask-composite: subtract;
+    animation: l3 1s infinite linear;
+  }
+  @keyframes l3 {to{transform: rotate(1turn)}}

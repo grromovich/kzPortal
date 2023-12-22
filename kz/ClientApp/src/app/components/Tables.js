@@ -17,7 +17,7 @@ export class Tables extends Component {
     render() { 
         return (  
         <div className="tables">
-            <div className="left_table">
+            <div className="left_table main-table">
                 <table>
                     <thead>
                         <tr>
@@ -51,7 +51,7 @@ export class Tables extends Component {
                     </tbody>
                 </table>
             </div>
-            <div className="right_table">
+            <div className="right_table main-table">
                 <table>
                     <thead>
                     <tr>
