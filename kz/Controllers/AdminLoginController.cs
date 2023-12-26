@@ -6,6 +6,7 @@ using System.Text.Json;
 using static System.Net.Mime.MediaTypeNames;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace kz.Controllers
 {
@@ -29,11 +30,24 @@ namespace kz.Controllers
             }
             if(data.Password == "000000")
             {
-                await Response.WriteAsync("{\"APIkey\":\"" + LoginController.ToSHA256("banana") + "\"}");
+                await Response.WriteAsync("{\"APIkey\":\"" + LoginController.ToSHA256(new Random().Next().ToString()) + "\"}");
             }
             else
             {
-                await Response.WriteAsJsonAsync(new { Error = "Ошибка авторизации" });
+                IPAddress remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress;
+                string result = "";
+                if (remoteIpAddress != null)
+                {
+                    // If we got an IPV6 address, then we need to ask the network for the IPV4 address 
+                    // This usually only happens when the browser is on the same machine as the server.
+                    if (remoteIpAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                    {
+                        remoteIpAddress = System.Net.Dns.GetHostEntry(remoteIpAddress).AddressList
+                .First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+                    }
+                    result = remoteIpAddress.ToString();
+                }
+                await Response.WriteAsJsonAsync(new { Error = result });
             }
         }
     }

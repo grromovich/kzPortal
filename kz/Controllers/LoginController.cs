@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Azure;
+using System.Net;
 
 namespace kz.Controllers
 {
@@ -60,6 +61,26 @@ namespace kz.Controllers
                 }
             }
             return number;
+        }
+
+        public string GetIPaddress(IPAddress addr)
+        {
+            string result = "";
+            if (addr != null)
+            {
+                // If we got an IPV6 address, then we need to ask the network for the IPV4 address 
+                // This usually only happens when the browser is on the same machine as the server.
+                if (addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                {
+                    addr = System.Net.Dns.GetHostEntry(addr).AddressList
+            .First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+                }
+                result = addr.ToString();
+
+                return result;
+            }
+               
+            return addr.ToString();
         }
 
         [HttpPost]
@@ -121,10 +142,25 @@ namespace kz.Controllers
                 }
                 else
                 {
+                    IPAddress remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress;
+                    string result = "";
+                    if (remoteIpAddress != null)
+                    {
+                        // If we got an IPV6 address, then we need to ask the network for the IPV4 address 
+                        // This usually only happens when the browser is on the same machine as the server.
+                        if (remoteIpAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                        {
+                            remoteIpAddress = System.Net.Dns.GetHostEntry(remoteIpAddress).AddressList
+                    .First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+                        }
+                        result = remoteIpAddress.ToString();
+                    }
+
                     BadLogin login = new BadLogin
                     {
                         TabelCode = user.TabelCode,
-                        BadLoginDate = DateTime.Now
+                        BadLoginDate = DateTime.Now,
+                        IPaddress = GetIPaddress(Request.HttpContext.Connection.RemoteIpAddress)
                     };
                     db.BadLogins.Add(login);
                     db.Users.Update(user);
