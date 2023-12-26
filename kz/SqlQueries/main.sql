@@ -43,6 +43,11 @@ BadLoginDate datetime2,
 IPaddress varchar(6) NOT NULL,
 );
 
+CREATE TABLE [Admin] (
+Password varchar(64),
+APIkey varchar(255),
+);
+
 INSERT INTO [Users] VALUES ('000000', N'Василий Васильев Васильевич', '149bfb5f0ba194f684cd8d068d42eee34c41a20cda0a5f54e2a928212e5ccb48', 0, 0, 0, '01/01/0001 00:00:00');
 INSERT INTO [Users] VALUES ('000001', N'Петр Петров Петрович',	'37f3d0fdecf217f8e8355a8776be94083586d86ec4af82eab24fb5bbbb94f31e', 0, 0, 0, '01/01/0001 00:00:00');
 
@@ -55,6 +60,8 @@ INSERT INTO [Articles] VALUES ('000000', 'Na', N'Начисления по социальным отчисл
 INSERT INTO [Articles] VALUES ('000000', 'Ud', N'НДФЛ', N'месяц год',  null, null, 130, 5534);
 INSERT INTO [Articles] VALUES ('000000', 'Vi', N'За первую половину месяца (Банк, вед. № 12507 от 18.09.20)', 'месяц год', null, null, 130, 22688.13);
 INSERT INTO [Articles] VALUES ('000000', 'Vi', N'Зарплата за месяц (Банк, вед. № 12138 от 30.09.20)', N'месяц год',  null, null, 130, 45376.27);
+
+INSERT INTO [Admin] VALUES ('149bfb5f0ba194f684cd8d068d42eee34c41a20cda0a5f54e2a928212e5ccb48', '')
 
 SELECT * FROM [Users];
 SELECT * FROM [Articles];

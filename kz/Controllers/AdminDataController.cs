@@ -14,43 +14,38 @@ namespace kz.Controllers
     [Route("[controller]")]
     public class AdminDataController : Controller
     {
-        private class Tabel
+        private class JsonObj
         {
-            public string? TabelCode { get; set; }
+            public string? APIkey { get; set; }
+            public string? Search { get; set; }
+
         }
-        public class JsonObj
+
+        public class UserTable
         {
-            public string? TabelCode { get; set; }
             public string? Name { get; set; }
-            public List<Article>? Articles { get; set; }
-            public double BeforeDolg { get; set; }
-            public double AfterDolg { get; set; }
-            public double TotalDohod { get; set; }
+            public string? TabelCode { get; set; }
+            public string? NumberBans {  get; set; }
+        }
+        public class ResponseJsonObj
+        {
+            public List<UserTable>? Users { get; set; }
         }
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            Tabel code;
+            JsonObj data;
             using (var reader = new StreamReader(Request.Body))
             {
                 var body = await reader.ReadToEndAsync();
-                code = JsonSerializer.Deserialize<Tabel>(body);
+                data = JsonSerializer.Deserialize<JsonObj>(body);
             }
 
-            User? user = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.TabelCode == code.TabelCode);
-            
-            if (user != null)
+            Admin? admin = await db.Admins.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
+
+            if (admin != null)
             {
-                List <Article> articles = db.Articles.AsNoTracking().Where(u => u.TabelCode == code.TabelCode).ToList();
-                JsonObj obj = new JsonObj();
-                obj.TabelCode = user.TabelCode;
-                obj.Name = user.Name;
-                obj.Articles = articles;
-                obj.BeforeDolg = user.BeforeDolg;
-                obj.AfterDolg = user.AfterDolg;
-                obj.TotalDohod = user.TotalDohod;
-                string JsonArticles = JsonSerializer.Serialize(obj, typeof(JsonObj));
-                await Response.WriteAsync(JsonArticles);
+                
             }
         }
     }

@@ -18,6 +18,7 @@ namespace kz.Controllers
         public class JsonObj
         {
             public string? Password { get; set; }
+            public string? APIkey { get; set; }
         }
         [HttpPost]
         public async Task Post(ApplicationContext db)
@@ -28,26 +29,20 @@ namespace kz.Controllers
                 var body = await reader.ReadToEndAsync();
                 data = JsonSerializer.Deserialize<JsonObj>(body);
             }
-            if(data.Password == "000000")
+
+            Admin? admin = await db.Admins.FirstOrDefaultAsync(u => u.Password == kz.Controllers.LoginController.ToSHA256(data.Password));
+
+            if (admin != null)
             {
-                await Response.WriteAsync("{\"APIkey\":\"" + LoginController.ToSHA256(new Random().Next().ToString()) + "\"}");
+                string apikey = LoginController.ToSHA256(new Random().Next().ToString());
+                admin.APIkey = apikey;
+                db.Admins.Update(admin);
+                db.SaveChanges();
+                await Response.WriteAsync("{\"APIkey\":\"" + apikey + "\"}");
             }
             else
             {
-                IPAddress remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress;
-                string result = "";
-                if (remoteIpAddress != null)
-                {
-                    // If we got an IPV6 address, then we need to ask the network for the IPV4 address 
-                    // This usually only happens when the browser is on the same machine as the server.
-                    if (remoteIpAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
-                    {
-                        remoteIpAddress = System.Net.Dns.GetHostEntry(remoteIpAddress).AddressList
-                .First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
-                    }
-                    result = remoteIpAddress.ToString();
-                }
-                await Response.WriteAsJsonAsync(new { Error = result });
+                await Response.WriteAsJsonAsync(new { Error = "Ошибка авторизации" });
             }
         }
     }
