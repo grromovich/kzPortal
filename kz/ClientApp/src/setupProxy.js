@@ -9,7 +9,9 @@ const context = [
     "/data",
     "/passwordchange",
     "/adminlogin",
-    "/admindata"
+    "/admindata",
+    "/adminsearch",
+    "/adminchangepassword",
 ];
 
 const onError = (err, req, resp, target) => {

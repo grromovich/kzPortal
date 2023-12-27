@@ -22,7 +22,7 @@ namespace kz.Controllers
         }
         [HttpPost]
         public async Task Post(ApplicationContext db)
-        {
+        {   
             JsonObj data;
             using (var reader = new StreamReader(Request.Body))
             {
@@ -30,7 +30,7 @@ namespace kz.Controllers
                 data = JsonSerializer.Deserialize<JsonObj>(body);
             }
 
-            Admin? admin = await db.Admins.FirstOrDefaultAsync(u => u.Password == kz.Controllers.LoginController.ToSHA256(data.Password));
+            Admin? admin = await db.Admins.FirstOrDefaultAsync(a => a.Password == kz.Controllers.LoginController.ToSHA256(data.Password));
 
             if (admin != null)
             {

@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./AdminInfo.css";
 import { PasswordPopup } from "../../components/PasswordPopup";
 import { User } from "../../shared/UserFromAdminTable";
-import {dataUsers} from "./data.js";
 import krestImg from '../../assets/images/krest.svg';
 import searchImg from '../../assets/images/search.svg';
 
@@ -13,6 +12,7 @@ export function AdminInfo() {
     const [visibilityPasswordPopup, setVisibilityPasswordPopup] = useState("hidden")
     const [visibilityExitPopup, setVisibilityExitPopup] = useState("hidden")
     const [visibilityInfoPopup, setVisibilityInfoPopup] = useState("hidden")
+    const [dataUsers, setDataUsers] = useState([])
     const [nowPopupUser, setNowPopupUser] = useState({name:"",tab:"",number:"",dateVisit:"",arrayOfIP:[]})
 
     function onExitClick() {
@@ -30,20 +30,8 @@ export function AdminInfo() {
         }
     }
 
-    function filterUsers(user) {
-        let search = String(searchValue)
-        if(search.length === 0){
-            return true;
-        }
-        if(isFIO(searchValue)){
-            return user.name.substring(0, search.length).toLowerCase() === search.toLowerCase()      
-        }
-        else {
-            search = search.replace("-","")
-            return user.tab.replace("-","").substring(0, search.length) === search
-        }
-    }
-    
+    SearchUsers("")
+
     return (
         <div className="wrapper">
             <PasswordPopup
@@ -136,7 +124,7 @@ export function AdminInfo() {
                     </thead>
                     <tbody>
                         {
-                            dataUsers.filter(filterUsers).map(user=>(
+                            dataUsers.map(user=>(
                                 <User 
                                     name={user.name}
                                     tab={user.tab}
@@ -149,7 +137,7 @@ export function AdminInfo() {
                             ))
                         }
                         {
-                            dataUsers.filter(filterUsers).length === 0 && 
+                            dataUsers.length === 0 && 
                             <p className = "admin-table-error">Ничего не найдено</p>
                         }
                     
@@ -159,4 +147,29 @@ export function AdminInfo() {
             </div>
         </div>
     )
+
+    async function SearchUsers(searchResult) {
+        fetch('adminsearch',
+            {
+                method: "POST",
+                //withCrefentials: true,
+                crossorigin: true,
+                mode: "no-cors",
+                headers: { "Accept": "application/json", "Content-Type": "application/json; charset=utf-8" },
+                body: JSON.stringify({
+                    APIkey: sessionStorage.getItem("APIkey"),
+                    Password: searchResult,
+                    Type: isFIO(searchResult) ? "String" : "Number"
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data !== false) {
+                    console.log(data)
+                }
+                else {
+                    console.log("ОШибка отправки на контроллер adminsearch")
+                }
+            })
+    }
 }

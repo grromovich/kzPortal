@@ -18,13 +18,20 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseHsts();
 }
 
+app.UseCors(c =>
+{
+    c.AllowAnyHeader();
+    c.AllowAnyMethod();
+    c.AllowAnyOrigin();
+});
+
 app.UseHttpsRedirection();
+app.UseForwardedHeaders();
 app.UseStaticFiles();
 app.UseRouting();
 
@@ -35,6 +42,6 @@ app.MapControllerRoute(
 
 app.MapFallbackToFile("index.html");
 
-app.UseForwardedHeaders();
+
 
 app.Run();

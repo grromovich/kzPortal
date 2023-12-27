@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS [Articles];
 DROP TABLE IF EXISTS [Settings];
 DROP TABLE IF EXISTS [BadLogins];
 DROP TABLE IF EXISTS [Users];
+DROP TABLE IF EXISTS [Admins];
 
 
 CREATE TABLE [Users] (
@@ -40,10 +41,10 @@ LastLoginDate datetime2,
 CREATE TABLE [BadLogins] (
 TabelCode varchar(6) NOT NULL,
 BadLoginDate datetime2,
-IPaddress varchar(6) NOT NULL,
+IPaddress varchar(30) NOT NULL,
 );
 
-CREATE TABLE [Admin] (
+CREATE TABLE [Admins] (
 Password varchar(64),
 APIkey varchar(255),
 );
@@ -61,9 +62,10 @@ INSERT INTO [Articles] VALUES ('000000', 'Ud', N'НДФЛ', N'месяц год',  null, nul
 INSERT INTO [Articles] VALUES ('000000', 'Vi', N'За первую половину месяца (Банк, вед. № 12507 от 18.09.20)', 'месяц год', null, null, 130, 22688.13);
 INSERT INTO [Articles] VALUES ('000000', 'Vi', N'Зарплата за месяц (Банк, вед. № 12138 от 30.09.20)', N'месяц год',  null, null, 130, 45376.27);
 
-INSERT INTO [Admin] VALUES ('149bfb5f0ba194f684cd8d068d42eee34c41a20cda0a5f54e2a928212e5ccb48', '')
+INSERT INTO [Admins] VALUES ('149bfb5f0ba194f684cd8d068d42eee34c41a20cda0a5f54e2a928212e5ccb48', '')
 
 SELECT * FROM [Users];
 SELECT * FROM [Articles];
 SELECT * FROM [Settings];
 SELECT * FROM [BadLogins];
+SELECT * FROM [Admins];

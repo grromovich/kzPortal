@@ -35,8 +35,6 @@ export function AdminHome() {
         fetch('adminlogin',
             {
                 method: "POST",
-                //withCrefentials: true,
-                crossorigin: true,
                 mode: "no-cors",
                 headers: { "Accept": "application/json", "Content-Type": "application/json; charset=utf-8" },
                 body: JSON.stringify({
