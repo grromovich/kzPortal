@@ -6,6 +6,7 @@ using System.Text.Json;
 using static System.Net.Mime.MediaTypeNames;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace kz.Controllers
 {
@@ -24,14 +25,16 @@ namespace kz.Controllers
 
         public class UserTable
         {
+            public string? Name { get; set; }
             public string? TabelCode { get; set; }
-            public string? IPaddress {  get; set; }
+            public string? NumberBans {  get; set; }
         }
 
         public class ResponseJsonObj
         {
             public List<UserTable>? Users { get; set; }
         }
+
 
         [HttpPost]
         public async Task Post(ApplicationContext db)
@@ -43,24 +46,42 @@ namespace kz.Controllers
                 data = JsonSerializer.Deserialize<JsonObj>(body);
             }
             var users = new List<UserTable>();
-            Admin? admin = await db.Admins.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
 
-            
+
+            Admin? admin = await db.Admins.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
 
             if (admin != null)
             {
-                var logins = db.BadLogins.Select(u => new { u.TabelCode }).ToList();
-
-                System.Diagnostics.Debug.WriteLine(logins[0]);
-                /*var users = db.Users.AsNoTracking().Select(u => new { u.TabelCode, u.Name }).ToList();
-                var dataUsers = new List<UserTable>();
-                foreach (var user in users)
+                var logins = db.BadLogins.GroupBy(u => u.TabelCode).Select(g => new
                 {
-                    dataUsers.Add(new UserTable {  Name = user.Name, TabelCode = user.TabelCode, NumberBans = null });
-                    string JsonArticles = JsonSerializer.Serialize(NumberBansUsers, typeof(BadLogin));
-                }*/
+                    g.Key,
+                    Count = g.Count()
+                }).ToList();
 
-                await Response.WriteAsync("");
+                var usersCodeName = db.Users.AsNoTracking().Select(u => new {u.Name, u.TabelCode}).ToList();
+                var dataList = new List<UserTable>();
+                
+                foreach (var user in usersCodeName)
+                {
+                    int userBan = 0;
+                    for(var i = 0; i < logins.Count; i++) 
+                    {
+                        if (user.TabelCode == logins[i].Key)
+                        {
+                            userBan = logins[i].Count;
+                        }
+                    }
+                    dataList.Add(new UserTable {  Name = user.Name, TabelCode = user.TabelCode, NumberBans = userBan.ToString()});
+                }
+
+                ResponseJsonObj dataUsers = new ResponseJsonObj();
+                dataUsers.Users = dataList;
+                string JsonArticles = JsonSerializer.Serialize(dataUsers, typeof(ResponseJsonObj));
+                await Response.WriteAsync(JsonArticles);
+            }
+            else
+            {
+                await Response.WriteAsync("Ошибка с аккаунтом админа");
             }
         }
     }

@@ -4,6 +4,7 @@ import { PasswordPopup } from "../../components/PasswordPopup";
 import { User } from "../../shared/UserFromAdminTable";
 import krestImg from '../../assets/images/krest.svg';
 import searchImg from '../../assets/images/search.svg';
+import { data } from 'jquery';
 
 export function AdminInfo() {
 
@@ -12,8 +13,37 @@ export function AdminInfo() {
     const [visibilityPasswordPopup, setVisibilityPasswordPopup] = useState("hidden")
     const [visibilityExitPopup, setVisibilityExitPopup] = useState("hidden")
     const [visibilityInfoPopup, setVisibilityInfoPopup] = useState("hidden")
-    const [dataUsers, setDataUsers] = useState([])
     const [nowPopupUser, setNowPopupUser] = useState({name:"",tab:"",number:"",dateVisit:"",arrayOfIP:[]})
+
+    const [dataUsers, setDataUsers] = useState([])
+    const [userList, setUserList] = useState([])
+
+    const [nowUsersNumberAll, setNowUsersNumberAll] = useState(15)
+    const [nowUsersNumberSearch, setNowUsersNumberSearch] = useState(15)
+
+    function checkPosition() {
+        const height = document.body.offsetHeight
+        const screenHeight = window.innerHeight
+
+        console.log(1)
+
+        const scrolled = window.scrollY
+      
+        const threshold = height - screenHeight / 4
+
+        const position = scrolled + screenHeight
+      
+        if (position >= threshold) {
+            if(searchValue!=""){
+                setNowUsersNumberSearch(nowUsersNumberSearch+10)
+            }
+            else {
+                setNowUsersNumberAll(nowUsersNumberAll+10)
+            }
+        }
+      }
+
+    useEffect(checkPosition, [window.scrollY])
 
     function onExitClick() {
         sessionStorage.setItem("TabelCode", "");
@@ -30,7 +60,36 @@ export function AdminInfo() {
         }
     }
 
-    SearchUsers("")
+    function filterUsers(user) {
+        let search = String(searchValue)
+        if(search.length === 0){
+            return true;
+        }
+        if(isFIO(searchValue)){
+            return user['Name'].substring(0, search.length).toLowerCase() === search.toLowerCase()      
+        }
+        else {
+            search = search.replace("-","")
+            return user['TabelCode'].replace("-","").substring(0, search.length) === search
+        }
+    }
+
+    useEffect(()=>{
+        if(dataUsers['Users'] != undefined){
+            setUserList([...userList, ...dataUsers['Users'].slice(0, nowUsersNumberAll)] )
+        }
+    }, [dataUsers, nowUsersNumberAll])
+
+    useEffect(()=>{
+        if(dataUsers['Users'] != undefined){    
+            let arr = dataUsers['Users'].filter(filterUsers)
+            setUserList(arr.slice(0, nowUsersNumberSearch))
+        }
+    }, [searchValue, nowUsersNumberSearch])
+
+    useEffect(()=>{
+        SearchUsers("");
+    }, [])
 
     return (
         <div className="wrapper">
@@ -124,30 +183,35 @@ export function AdminInfo() {
                     </thead>
                     <tbody>
                         {
-                            dataUsers.map(user=>(
+                            userList && 
+                            <>{
+                                userList.map(user=>(
                                 <User 
-                                    name={user.name}
-                                    tab={user.tab}
-                                    number={user.number}
+                                    key={user['TabelCode']}
+                                    name={user['Name']}
+                                    tab={user['TabelCode']}
+                                    number={user['NumberBans']}
                                     onClickInfo={(tab)=>{
                                         setNowPopupUser(dataUsers.find((user)=>user.tab === tab))
                                         setVisibilityInfoPopup("visible")
                                     }}
                                 />
                             ))
+                            }</>
                         }
                         {
-                            dataUsers.length === 0 && 
-                            <p className = "admin-table-error">Ничего не найдено</p>
+                            
                         }
-                    
                     </tbody>
                 </table>
                 </div>
             </div>
         </div>
     )
-
+    {
+        dataUsers['Users'].length === 0 && 
+        <p className = "admin-table-error">Ничего не найдено</p>
+    }
     async function SearchUsers(searchResult) {
         fetch('adminsearch',
             {
@@ -165,7 +229,8 @@ export function AdminInfo() {
             .then((response) => response.json())
             .then((data) => {
                 if (data !== false) {
-                    console.log(data)
+                    console.log(data['Users'])
+                    setDataUsers(data)
                 }
                 else {
                     console.log("ОШибка отправки на контроллер adminsearch")

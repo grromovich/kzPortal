@@ -1,4 +1,6 @@
-﻿namespace kz.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace kz.Models
 {
     public class BadLogin
     {
