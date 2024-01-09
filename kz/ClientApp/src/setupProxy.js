@@ -10,7 +10,6 @@ const context = [
     "/passwordchange",
     "/adminlogin",
     "/admindata",
-    "/adminsearch",
     "/adminchangepassword",
 ];
 

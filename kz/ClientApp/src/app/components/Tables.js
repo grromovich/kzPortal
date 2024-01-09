@@ -36,7 +36,7 @@ export class Tables extends Component {
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td>{this.sumArticles(this.props.articles.filter(article => article.ArticleType === "Na"))}</td>
+                        <td>{Math.round(this.sumArticles(this.props.articles.filter(article => article.ArticleType === "Na"), 2))}</td>
                     </tr>
                     {this.props.articles.filter(article => article.ArticleType === "Na").map((filteredArticle, i) => (
                         <tr key={i}>
@@ -64,7 +64,7 @@ export class Tables extends Component {
                     <tr className="bold">
                         <td>Удержано:</td>
                         <td></td>
-                        <td>{this.sumArticles(this.props.articles.filter(article => article.ArticleType === "Ud"))}</td>
+                        <td>{Math.round(this.sumArticles(this.props.articles.filter(article => article.ArticleType === "Ud")))}</td>
                     </tr>
                     {this.props.articles.filter(article => article.ArticleType === "Ud").map((filteredArticle,i) => (
                         <tr key={i}>
@@ -76,7 +76,7 @@ export class Tables extends Component {
                     <tr className="bold">
                         <td>Выплачено:</td>
                         <td></td>
-                        <td>{this.sumArticles(this.props.articles.filter(article => article.ArticleType === "Vi"))}</td>
+                        <td>{Math.round(this.sumArticles(this.props.articles.filter(article => article.ArticleType === "Vi")))}</td>
                     </tr>
                     {this.props.articles.filter(article => article.ArticleType === "Vi").map((filteredArticle, i) => (
                         <tr key={i}>

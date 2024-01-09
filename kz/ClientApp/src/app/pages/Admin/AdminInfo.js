@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { InView } from 'react-intersection-observer';
 import "./AdminInfo.css";
 import { PasswordPopup } from "../../components/PasswordPopup";
 import { User } from "../../shared/UserFromAdminTable";
 import krestImg from '../../assets/images/krest.svg';
 import searchImg from '../../assets/images/search.svg';
-import { data } from 'jquery';
 
 export function AdminInfo() {
 
@@ -16,34 +16,11 @@ export function AdminInfo() {
     const [nowPopupUser, setNowPopupUser] = useState({name:"",tab:"",number:"",dateVisit:"",arrayOfIP:[]})
 
     const [dataUsers, setDataUsers] = useState([])
-    const [userList, setUserList] = useState([])
 
+    const [inView, setInView] = useState(false);
+    
     const [nowUsersNumberAll, setNowUsersNumberAll] = useState(15)
     const [nowUsersNumberSearch, setNowUsersNumberSearch] = useState(15)
-
-    function checkPosition() {
-        const height = document.body.offsetHeight
-        const screenHeight = window.innerHeight
-
-        console.log(1)
-
-        const scrolled = window.scrollY
-      
-        const threshold = height - screenHeight / 4
-
-        const position = scrolled + screenHeight
-      
-        if (position >= threshold) {
-            if(searchValue!=""){
-                setNowUsersNumberSearch(nowUsersNumberSearch+10)
-            }
-            else {
-                setNowUsersNumberAll(nowUsersNumberAll+10)
-            }
-        }
-      }
-
-    useEffect(checkPosition, [window.scrollY])
 
     function onExitClick() {
         sessionStorage.setItem("TabelCode", "");
@@ -75,22 +52,24 @@ export function AdminInfo() {
     }
 
     useEffect(()=>{
-        if(dataUsers['Users'] != undefined){
-            setUserList([...userList, ...dataUsers['Users'].slice(0, nowUsersNumberAll)] )
-        }
-    }, [dataUsers, nowUsersNumberAll])
-
-    useEffect(()=>{
-        if(dataUsers['Users'] != undefined){    
-            let arr = dataUsers['Users'].filter(filterUsers)
-            setUserList(arr.slice(0, nowUsersNumberSearch))
-        }
-    }, [searchValue, nowUsersNumberSearch])
-
-    useEffect(()=>{
         SearchUsers("");
     }, [])
 
+    useEffect(()=>{
+        setNowUsersNumberSearch(15)
+    }, [searchValue])
+
+    useEffect(()=>{
+        if(inView){
+            if(searchValue){
+                setNowUsersNumberSearch(nowUsersNumberSearch+10)
+            }
+            else {
+                setNowUsersNumberAll(nowUsersNumberAll+10)
+            }
+        }
+    }, [inView])
+    
     return (
         <div className="wrapper">
             <PasswordPopup
@@ -183,24 +162,30 @@ export function AdminInfo() {
                     </thead>
                     <tbody>
                         {
-                            userList && 
-                            <>{
-                                userList.map(user=>(
+                            dataUsers.length && 
+                            <>
+                            {
+                                dataUsers.filter(filterUsers).slice(0, searchValue ? nowUsersNumberSearch : nowUsersNumberAll).map(user=>(
                                 <User 
                                     key={user['TabelCode']}
                                     name={user['Name']}
                                     tab={user['TabelCode']}
                                     number={user['NumberBans']}
                                     onClickInfo={(tab)=>{
-                                        setNowPopupUser(dataUsers.find((user)=>user.tab === tab))
+                                        setNowPopupUser(dataUsers.find((u)=>u['TabelCode'] === tab))
                                         setVisibilityInfoPopup("visible")
                                     }}
                                 />
-                            ))
-                            }</>
+                                ))
+                            }
+                                <InView onChange={setInView}>
+                                    <tr className='admin-inView-tr'></tr>
+                                </InView>
+                            </>
                         }
                         {
-                            
+                            dataUsers.length === 0 && 
+                            <p className = "admin-table-error">Ничего не найдено</p>
                         }
                     </tbody>
                 </table>
@@ -208,12 +193,9 @@ export function AdminInfo() {
             </div>
         </div>
     )
-    {
-        dataUsers['Users'].length === 0 && 
-        <p className = "admin-table-error">Ничего не найдено</p>
-    }
+    
     async function SearchUsers(searchResult) {
-        fetch('adminsearch',
+        fetch('admindata',
             {
                 method: "POST",
                 //withCrefentials: true,
@@ -229,11 +211,10 @@ export function AdminInfo() {
             .then((response) => response.json())
             .then((data) => {
                 if (data !== false) {
-                    console.log(data['Users'])
-                    setDataUsers(data)
+                    setDataUsers(data['Users'])
                 }
                 else {
-                    console.log("ОШибка отправки на контроллер adminsearch")
+                    console.log("Ошибка отправки на контроллер adminsearch")
                 }
             })
     }

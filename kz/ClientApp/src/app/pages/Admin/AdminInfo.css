@@ -144,3 +144,8 @@
     width: 15px;
     height: 15px;
 }
+
+.admin-inView-tr {
+    width: 5px;
+    visibility: hidden;
+}

@@ -13,7 +13,7 @@ namespace kz.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    public class AdminSearchController : Controller
+    public class AdminDataController : Controller
     {
         private class JsonObj
         {
