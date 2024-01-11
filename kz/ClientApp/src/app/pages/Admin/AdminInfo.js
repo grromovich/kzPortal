@@ -52,7 +52,7 @@ export function AdminInfo() {
     }
 
     useEffect(()=>{
-        SearchUsers("");
+        SearchUsers();
     }, [])
 
     useEffect(()=>{
@@ -88,7 +88,7 @@ export function AdminInfo() {
                     </div>
                 </div>
             </div>
-            <div className="overlay" style={{ visibility: visibilityInfoPopup }}>
+            <div className="overlay admin-overlay" style={{ visibility: visibilityInfoPopup }}>
                 <div className="admin-info-popup">
                     <div className="img-group krest">
                         <img src={krestImg} alt=""/>
@@ -112,7 +112,7 @@ export function AdminInfo() {
                                     </thead>
                                     <tbody>
                                         {
-                                            nowPopupUser.arrayOfIP.map(user=>(
+                                            nowPopupUser.arrayOfIP && nowPopupUser.arrayOfIP.map(user=>(
                                                 <tr>
                                                     <td>{user.ip}</td>
                                                     <td>{user.date}</td>
@@ -194,7 +194,7 @@ export function AdminInfo() {
         </div>
     )
     
-    async function SearchUsers(searchResult) {
+    async function SearchUsers() {
         fetch('admindata',
             {
                 method: "POST",
@@ -203,9 +203,7 @@ export function AdminInfo() {
                 mode: "no-cors",
                 headers: { "Accept": "application/json", "Content-Type": "application/json; charset=utf-8" },
                 body: JSON.stringify({
-                    APIkey: sessionStorage.getItem("APIkey"),
-                    Password: searchResult,
-                    Type: isFIO(searchResult) ? "String" : "Number"
+                    APIkey: sessionStorage.getItem("APIkey")
                 })
             })
             .then((response) => response.json())

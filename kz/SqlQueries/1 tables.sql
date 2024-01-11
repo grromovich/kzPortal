@@ -30,7 +30,7 @@ Oplacheno int,
 Money float NOT NULL,
 );
 
-/* Не трогать! Челы вылетят из аков*/
+/* Таблицу не трогать! Челы вылетят из аков*/
 CREATE TABLE [Settings] (
 TabelCode varchar(6) NOT NULL,
 APIkey varchar(255),
@@ -41,6 +41,12 @@ LastLoginDate datetime2,
 CREATE TABLE [BadLogins] (
 TabelCode varchar(6) NOT NULL,
 BadLoginDate datetime2,
+IPaddress varchar(30) NOT NULL,
+);
+
+CREATE TABLE [Bans] (
+TabelCode varchar(6) NOT NULL,
+BanDate datetime2,
 IPaddress varchar(30) NOT NULL,
 );
 

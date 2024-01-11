@@ -33,6 +33,10 @@
     width: calc(100% - 270px - 2 * 150px);
 }
 
+.admin-overlay {
+    position: fixed;
+}
+
 .admin-info-popup {
     width: 698px;
     height: 540px;

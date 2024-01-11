@@ -63,13 +63,14 @@ namespace kz.Controllers
             return number;
         }
 
+        // Функция для конвертации ipv4 в ipv6
         public string GetIPaddress(IPAddress addr)
         {
             string result = "";
             if (addr != null)
             {
-                // If we got an IPV6 address, then we need to ask the network for the IPV4 address 
-                // This usually only happens when the browser is on the same machine as the server.
+                // Сравниваем адреса систем
+                // Получение адреса ломается, когда сервер и браузер запущен на одной и то же машине
                 if (addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
                 {
                     addr = System.Net.Dns.GetHostEntry(addr).AddressList
@@ -142,20 +143,6 @@ namespace kz.Controllers
                 }
                 else
                 {
-                    IPAddress remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress;
-                    string result = "";
-                    if (remoteIpAddress != null)
-                    {
-                        // If we got an IPV6 address, then we need to ask the network for the IPV4 address 
-                        // This usually only happens when the browser is on the same machine as the server.
-                        if (remoteIpAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
-                        {
-                            remoteIpAddress = System.Net.Dns.GetHostEntry(remoteIpAddress).AddressList
-                    .First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
-                        }
-                        result = remoteIpAddress.ToString();
-                    }
-
                     BadLogin login = new BadLogin
                     {
                         TabelCode = user.TabelCode,
@@ -177,7 +164,7 @@ namespace kz.Controllers
                         NumberBadLogins = GetNumberBadLogins(db.BadLogins.ToList());
                     }
 
-                    if (NumberBadLogins >=3)
+                    if (NumberBadLogins > 2)
                     {
                         user.BanDate = DateTime.Now;
                         db.Users.Update(user);

@@ -52,11 +52,11 @@ export function Main() {
                 onClose={() => setVisibilityPasswordPopup("hidden")}
             />
             <div className="overlay" style={{ visibility: visibilityExitPopup }}>
-                <div class="exit-popup" style={{visibility: visibilityExitPopup}}>
-                    <div class="exit-popup__container">
+                <div className="exit-popup" style={{visibility: visibilityExitPopup}}>
+                    <div className="exit-popup__container">
                         <h1>Выход</h1>
                         <p>Вы действительно хотите выйти?</p>
-                        <div class="exit-popup-buttons">
+                        <div className="exit-popup-buttons">
                             <button onClick={onExitClick}>Выйти</button>
                             <button onClick={()=>{setVisibilityExitPopup("hidden")}}>Отмена</button>
                         </div>

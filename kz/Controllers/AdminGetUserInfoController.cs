@@ -13,11 +13,13 @@ namespace kz.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    public class AdminDataController : Controller
+    public class AdminGetUserInfoController : Controller
     {
         private class JsonObj
         {
             public string? APIkey { get; set; }
+            public string? UserTabelCode { get; set; }
+
         }
 
         public class UserTable
@@ -25,11 +27,14 @@ namespace kz.Controllers
             public string? Name { get; set; }
             public string? TabelCode { get; set; }
             public string? NumberBans {  get; set; }
+            public string? LastLoginDate { get; set; }
+            public List<BanUser> Bans { get; set; }
         }
 
-        public class ResponseJsonObj
+        public class BanUser
         {
-            public List<UserTable>? Users { get; set; }
+            public string? IP { get; set; }
+            public string? Date { get; set; }
         }
 
 
@@ -42,7 +47,6 @@ namespace kz.Controllers
                 var body = await reader.ReadToEndAsync();
                 data = JsonSerializer.Deserialize<JsonObj>(body);
             }
-
 
             Admin? admin = await db.Admins.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
 
@@ -69,11 +73,6 @@ namespace kz.Controllers
                     }
                     dataList.Add(new UserTable {  Name = user.Name, TabelCode = user.TabelCode, NumberBans = userBan.ToString()});
                 }
-
-                ResponseJsonObj dataUsers = new ResponseJsonObj();
-                dataUsers.Users = dataList;
-                string JsonArticles = JsonSerializer.Serialize(dataUsers, typeof(ResponseJsonObj));
-                await Response.WriteAsync(JsonArticles);
             }
             else
             {
