@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -38,28 +39,33 @@ namespace kz.Controllers
 
         public int GetNumberBadLogins(List<BadLogin> listBadLogins, DateTime LastLoginDate = default(DateTime)) {
             int number = 0;
+
             int n = 3;
-            if (listBadLogins.Count < 3)
+
+            if(listBadLogins.Count < 3)
             {
                 n = listBadLogins.Count;
             }
-            for (int i = listBadLogins.Count - 1; i > listBadLogins.Count - n; i--)
+
+            for(int i = listBadLogins.Count - 1; i > listBadLogins.Count - n - 1; i--) 
             {
-                if((DateTime.Now - listBadLogins[i].BadLoginDate).Duration().Minutes < 7)
+                var minutes = (DateTime.Now - listBadLogins[i].BadLoginDate).Duration();
+                if(minutes.Minutes < 7)
                 {
-                    if(LastLoginDate != default(DateTime))
+                    Debug.WriteLine(LastLoginDate > default(DateTime));
+                    Debug.WriteLine((LastLoginDate - listBadLogins[i].BadLoginDate).Duration().Minutes);
+                    if (LastLoginDate > default(DateTime) && LastLoginDate > listBadLogins[i].BadLoginDate)
                     {
-                        if((LastLoginDate - listBadLogins[i].BadLoginDate).Duration().Minutes > 0)
-                        {
-                            number++;
-                        }
+                        break;
                     }
-                    else
-                    {
-                        number++;
-                    }
+                    number++;
+                }
+                else
+                {
+                    break;
                 }
             }
+            
             return number;
         }
 
@@ -99,21 +105,20 @@ namespace kz.Controllers
             User? user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == data.TabelCode);
             if (user != null)
             {
-                if (user.BanDate != DateTime.MinValue)
+                // Проверка пользователя на наличие бана
+                // Если он есть - возварщается ошибка о бане
+                Ban? UserBan = await db.Bans.OrderBy(e => e.BanDate).LastOrDefaultAsync(u => u.TabelCode == data.TabelCode);
+
+                if (UserBan != null)
                 {
-                    TimeSpan minutes1 = (DateTime.Now - user.BanDate).Duration();
-                    if (minutes1.Minutes > 6)
+                    TimeSpan minutes = (DateTime.Now - UserBan.BanDate).Duration();
+                    if (minutes.Minutes < 6)
                     {
-                        user.BanDate = DateTime.MinValue;
-                        db.Users.Update(user);
-                        db.SaveChanges();
-                    }
-                    else
-                    {
-                        await Response.WriteAsJsonAsync(new { Error = "Попробуйте через " + (7 - minutes1.Minutes) + " минут" });
+                        await Response.WriteAsJsonAsync(new { Error = "Попробуйте через " + (7 - minutes.Minutes) + " минут" });
                         return;
                     }
                 }
+
                 if (user.Password == ToSHA256(data.Password))
                 {
                     string APIkey = ToSHA256(new Random().Next().ToString());
@@ -143,32 +148,40 @@ namespace kz.Controllers
                 }
                 else
                 {
+                    var ip = GetIPaddress(Request.HttpContext.Connection.RemoteIpAddress);
                     BadLogin login = new BadLogin
                     {
                         TabelCode = user.TabelCode,
                         BadLoginDate = DateTime.Now,
-                        IPaddress = GetIPaddress(Request.HttpContext.Connection.RemoteIpAddress)
+                        IPaddress = ip
                     };
+                
                     db.BadLogins.Add(login);
-                    db.Users.Update(user);
                     db.SaveChanges();
 
-                    Setting? LastLoginDate = db.Settings.FirstOrDefault(u => u.TabelCode == user.TabelCode);
-                    int NumberBadLogins = 0;
+                    Setting? LastLoginDate = db.Settings.AsNoTracking().FirstOrDefault(u => u.TabelCode == user.TabelCode);
+                    int NumberBadLogins;
+
                     if (LastLoginDate != null)
                     {
-                        NumberBadLogins = GetNumberBadLogins(db.BadLogins.ToList(), LastLoginDate.LastLoginDate);
+                        NumberBadLogins = GetNumberBadLogins(db.BadLogins.AsNoTracking().ToList(), LastLoginDate.LastLoginDate);
                     }
                     else
                     {
-                        NumberBadLogins = GetNumberBadLogins(db.BadLogins.ToList());
+                        NumberBadLogins = GetNumberBadLogins(db.BadLogins.AsNoTracking().ToList());
                     }
 
                     if (NumberBadLogins > 2)
                     {
-                        user.BanDate = DateTime.Now;
-                        db.Users.Update(user);
+                        Ban ban = new Ban
+                        {
+                            TabelCode = user.TabelCode,
+                            BanDate = DateTime.Now,
+                            IPaddress = ip
+                        };
+                        db.Bans.Add(ban);
                         db.SaveChanges();
+
                         await Response.WriteAsJsonAsync(new { Error = "Попробуйте через " + 7 + " минут" });
                     }
                     else

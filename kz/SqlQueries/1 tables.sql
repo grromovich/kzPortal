@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS [Articles];
 DROP TABLE IF EXISTS [Settings];
 DROP TABLE IF EXISTS [BadLogins];
+DROP TABLE IF EXISTS [Bans];
 DROP TABLE IF EXISTS [Users];
 DROP TABLE IF EXISTS [Admins];
 
@@ -11,8 +12,7 @@ Name nvarchar(255) NOT NULL,
 Password varchar(64),
 BeforeDolg float NOT NULL,
 AfterDolg float NOT NULL,
-TotalDohod float NOT NULL,
-BanDate datetime2 NOT NULL,
+TotalDohod float NOT NULL
 );
 
 CREATE TABLE [Articles] (
