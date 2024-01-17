@@ -11,6 +11,7 @@ const context = [
     "/adminlogin",
     "/admindata",
     "/adminchangepassword",
+    "/admingetuserinfo"
 ];
 
 const onError = (err, req, resp, target) => {

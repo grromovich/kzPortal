@@ -7,6 +7,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using static kz.Controllers.AdminDataController;
 
 namespace kz.Controllers
 {
@@ -52,27 +53,30 @@ namespace kz.Controllers
 
             if (admin != null)
             {
-                var logins = db.BadLogins.GroupBy(u => u.TabelCode).Select(g => new
+                var userInfo = db.Users.AsNoTracking().FirstOrDefault(u => u.TabelCode == data.UserTabelCode);
+                var numberBans = db.Bans.Count(u => u.TabelCode == data.UserTabelCode).ToString();
+                var loginDate = db.Settings.AsNoTracking().FirstOrDefault(u => u.TabelCode == data.UserTabelCode);
+                var login = "Не был авторизирован";
+                if(loginDate != null)
                 {
-                    g.Key,
-                    Count = g.Count()
-                }).ToList();
-
-                var usersCodeName = db.Users.AsNoTracking().Select(u => new {u.Name, u.TabelCode}).ToList();
-                var dataList = new List<UserTable>();
-                
-                foreach (var user in usersCodeName)
-                {
-                    int userBan = 0;
-                    for(var i = 0; i < logins.Count; i++) 
-                    {
-                        if (user.TabelCode == logins[i].Key)
-                        {
-                            userBan = logins[i].Count;
-                        }
-                    }
-                    dataList.Add(new UserTable {  Name = user.Name, TabelCode = user.TabelCode, NumberBans = userBan.ToString()});
+                    login = loginDate.LastLoginDate.ToString();
                 }
+
+                var bans = db.Bans.AsNoTracking().Where(u => u.TabelCode == data.UserTabelCode).ToList();
+                var banuser = new List<BanUser>();
+                foreach (var UserBan in bans)
+                {
+                    banuser.Add(new BanUser { IP = UserBan.IPaddress, Date = UserBan.BanDate.ToString() });
+                }
+
+                UserTable User = new UserTable();
+                User.Name = userInfo.Name;
+                User.TabelCode = userInfo.TabelCode;
+                User.NumberBans = numberBans;
+                User.LastLoginDate = login;
+                User.Bans = banuser;
+                string JsonArticles = JsonSerializer.Serialize(User, typeof(UserTable));
+                await Response.WriteAsync(JsonArticles);
             }
             else
             {

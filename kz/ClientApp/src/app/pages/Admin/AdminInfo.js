@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { InView } from 'react-intersection-observer';
 import "./AdminInfo.css";
 import { PasswordPopup } from "../../components/PasswordPopup";
@@ -14,6 +14,7 @@ export function AdminInfo() {
     const [visibilityExitPopup, setVisibilityExitPopup] = useState("hidden")
     const [visibilityInfoPopup, setVisibilityInfoPopup] = useState("hidden")
     const [nowPopupUser, setNowPopupUser] = useState({name:"",tab:"",number:"",dateVisit:"",arrayOfIP:[]})
+    const [nowPopupUserData, setNowPopupUserData] = useState({name:"",tab:"",number:"",dateVisit:"",arrayOfIP:[]})
 
     const [dataUsers, setDataUsers] = useState([])
 
@@ -51,6 +52,48 @@ export function AdminInfo() {
         }
     }
 
+    const escFunction = useCallback((event) => {
+        if (event.key === "Escape") {
+          setVisibilityInfoPopup("hidden");
+        }
+      }, []);
+    
+      useEffect(() => {
+        document.addEventListener("keydown", escFunction, false);
+    
+        return () => {
+          document.removeEventListener("keydown", escFunction, false);
+        };
+      }, [escFunction]);
+
+    function DisplayUsers() {
+        let numberUsers
+        if(searchValue) {
+            numberUsers = nowUsersNumberSearch
+        } else {
+            numberUsers = nowUsersNumberAll
+        }
+        let users = dataUsers.filter(filterUsers).slice(0, numberUsers).map(user=>(
+            <User 
+                key={user['TabelCode']}
+                name={user['Name']}
+                tab={user['TabelCode']}
+                number={user['NumberBans']}
+                onClickInfo={(tab)=>{
+                    setNowPopupUser(dataUsers.find((u)=>u['TabelCode'] === tab))
+                    setVisibilityInfoPopup("visible")
+                }}
+            />
+            ))
+        if(users.length > 0) {
+            let inview =  <InView onChange={setInView}><tr className='admin-inView-tr'></tr></InView>
+            return users.concat(inview)
+        }
+        else {
+            return <p className = "admin-table-error">Ничего не найдено</p>
+        }
+    }
+
     useEffect(()=>{
         SearchUsers();
     }, [])
@@ -70,6 +113,14 @@ export function AdminInfo() {
         }
     }, [inView])
     
+    useEffect(()=>{
+        if(nowPopupUser.name == "") {
+            return;
+        }
+        getInfoUser()
+    }, [nowPopupUser])
+
+
     return (
         <div className="wrapper">
             <PasswordPopup
@@ -92,15 +143,15 @@ export function AdminInfo() {
                 <div className="admin-info-popup">
                     <div className="img-group krest">
                         <img src={krestImg} alt=""/>
-                        <div className="admin-white-box" onClick={ ()=>setVisibilityInfoPopup("hidden") }></div>
+                        <div className="admin-white-box" onClick={ ()=>setVisibilityInfoPopup("hidden")}></div>
                     </div>
                     <div className="admin-popup__container">
                         <h1>Информация</h1>
                         <div className="admin-info-group">
-                            <p>ФИО: {nowPopupUser.name}</p>
-                            <p>Таб. номер: {nowPopupUser.tab}</p>
-                            <p>Число неудачных попыток входа: {nowPopupUser.number}</p>
-                            <p>Дата последнего посещения: {nowPopupUser.dateVisit}</p>
+                            <p>ФИО: {nowPopupUserData['Name']}</p>
+                            <p>Таб. номер: {nowPopupUserData['TabelCode']}</p>
+                            <p>Число неудачных попыток входа: {nowPopupUserData['NumberBans']}</p>
+                            <p>Дата последнего посещения: {nowPopupUserData['LastLoginDate']}</p>
                             <p className="admin-table-block-text">Блокировки</p>
                             <div className="admin-info-frame">
                                 <table>
@@ -112,10 +163,10 @@ export function AdminInfo() {
                                     </thead>
                                     <tbody>
                                         {
-                                            nowPopupUser.arrayOfIP && nowPopupUser.arrayOfIP.map(user=>(
+                                            nowPopupUserData['Bans'] && nowPopupUserData['Bans'].map(user=>(
                                                 <tr>
-                                                    <td>{user.ip}</td>
-                                                    <td>{user.date}</td>
+                                                    <td>{user['IP']}</td>
+                                                    <td>{user['Date']}</td>
                                                 </tr>
                                             ))
                                         }
@@ -156,37 +207,12 @@ export function AdminInfo() {
                     <tr>
                         <th>ФИО</th>
                         <th>Таб. номер</th>
-                        <th>Попытки</th>
+                        <th>Блокировки</th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
-                        {
-                            dataUsers.length && 
-                            <>
-                            {
-                                dataUsers.filter(filterUsers).slice(0, searchValue ? nowUsersNumberSearch : nowUsersNumberAll).map(user=>(
-                                <User 
-                                    key={user['TabelCode']}
-                                    name={user['Name']}
-                                    tab={user['TabelCode']}
-                                    number={user['NumberBans']}
-                                    onClickInfo={(tab)=>{
-                                        setNowPopupUser(dataUsers.find((u)=>u['TabelCode'] === tab))
-                                        setVisibilityInfoPopup("visible")
-                                    }}
-                                />
-                                ))
-                            }
-                                <InView onChange={setInView}>
-                                    <tr className='admin-inView-tr'></tr>
-                                </InView>
-                            </>
-                        }
-                        {
-                            dataUsers.length === 0 && 
-                            <p className = "admin-table-error">Ничего не найдено</p>
-                        }
+                        {DisplayUsers()}
                     </tbody>
                 </table>
                 </div>
@@ -216,4 +242,27 @@ export function AdminInfo() {
                 }
             })
     }
+async function getInfoUser() {
+    fetch('admingetuserinfo',
+        {
+            method: "POST",
+            //withCrefentials: true,
+            crossorigin: true,
+            mode: "no-cors",
+            headers: { "Accept": "application/json", "Content-Type": "application/json; charset=utf-8" },
+            body: JSON.stringify({
+                APIkey: sessionStorage.getItem("APIkey"),
+                UserTabelCode: nowPopupUser['TabelCode']
+            })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data !== false) {
+                setNowPopupUserData(data);
+            }
+            else {
+                console.log("Ошибка отправки на контроллер admingetuserinfo")
+            }
+        })
+}
 }

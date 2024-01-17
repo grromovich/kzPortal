@@ -48,7 +48,7 @@ namespace kz.Controllers
 
             if (admin != null)
             {
-                var logins = db.BadLogins.GroupBy(u => u.TabelCode).Select(g => new
+                var logins = db.Bans.GroupBy(u => u.TabelCode).Select(g => new
                 {
                     g.Key,
                     Count = g.Count()
