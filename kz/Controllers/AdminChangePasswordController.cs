@@ -32,11 +32,11 @@ namespace kz.Controllers
                 var body = await reader.ReadToEndAsync();
                 data = JsonSerializer.Deserialize<JsonData>(body);
             }
-            Admin? admin = await db.Admins.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
+            Setting? admin = await db.Settings.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
 
             if (admin != null)
             {
-                User user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == data.TabelCode);
+                User user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == data.TabelCode && u.Role == 1);
                 if (user != null)
                 {
                     if (data.Password.Length > 5)

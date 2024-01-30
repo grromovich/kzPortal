@@ -8,7 +8,6 @@ namespace kz.Models
         public DbSet<Setting> Settings { get; set; } = null!;
         public DbSet<BadLogin> BadLogins { get; set; } = null!;
         public DbSet<Ban> Bans { get; set; } = null!;
-        public DbSet<Admin> Admins { get; set; } = null!; 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
@@ -21,7 +20,6 @@ namespace kz.Models
             modelBuilder.Entity<Setting>().HasKey(v => v.TabelCode);
             modelBuilder.Entity<BadLogin>().HasKey(v => v.TabelCode);
             modelBuilder.Entity<Ban>().HasKey(v => v.TabelCode);
-            modelBuilder.Entity<Admin>().HasKey(v => v.Password);
         }
     }
 }

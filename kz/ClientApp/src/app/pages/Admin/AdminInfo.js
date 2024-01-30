@@ -2,9 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { InView } from 'react-intersection-observer';
 import "./AdminInfo.css";
 import { PasswordPopup } from "../../components/PasswordPopup";
+import {ExitPopup} from "../../components/ExitPopup";
 import { User } from "../../shared/UserFromAdminTable";
 import krestImg from '../../assets/images/krest.svg';
 import searchImg from '../../assets/images/search.svg';
+
+
 
 export function AdminInfo() {
 
@@ -22,12 +25,6 @@ export function AdminInfo() {
     
     const [nowUsersNumberAll, setNowUsersNumberAll] = useState(15)
     const [nowUsersNumberSearch, setNowUsersNumberSearch] = useState(15)
-
-    function onExitClick() {
-        sessionStorage.setItem("TabelCode", "");
-        sessionStorage.setItem("APIkey", "");
-        window.location.assign('/');
-    };
 
     function isFIO(searchResult){
         if(isNaN(Number(searchResult[0]))){
@@ -114,11 +111,11 @@ export function AdminInfo() {
     }, [inView])
     
     useEffect(()=>{
-        if(nowPopupUser.name == "") {
+        if(nowPopupUser.name === "") {
             return;
         }
         getInfoUser()
-    }, [nowPopupUser])
+    }, [nowPopupUser, getInfoUser])
 
 
     return (
@@ -127,18 +124,10 @@ export function AdminInfo() {
                 visibilityPasswordPopup={visibilityPasswordPopup}
                 onClose={() => setVisibilityPasswordPopup("hidden")}
             />
-            <div className="overlay" style={{ visibility: visibilityExitPopup }}>
-                <div className="exit-popup" style={{visibility: visibilityExitPopup}}>
-                    <div className="exit-popup__container">
-                        <h1>Выход</h1>
-                        <p>Вы действительно хотите выйти?</p>
-                        <div className="exit-popup-buttons">
-                            <button onClick={onExitClick}>Выйти</button>
-                            <button onClick={()=>{setVisibilityExitPopup("hidden")}}>Отмена</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ExitPopup
+                visibilityExitPopup={visibilityExitPopup}
+                onClose={(data)=>{setVisibilityExitPopup(data)}}
+            />
             <div className="overlay admin-overlay" style={{ visibility: visibilityInfoPopup }}>
                 <div className="admin-info-popup">
                     <div className="img-group krest">
@@ -195,7 +184,7 @@ export function AdminInfo() {
                                 />
                             </div>
                         </li>
-                        <li className='bold'>Админ-панель</li>
+                        <li className='bold'><a href="/main">Вернуться</a></li>
                         <li onClick={()=>{setVisibilityExitPopup("visible")}}>Выйти</li>
                     </ul>
                 </div>
@@ -242,6 +231,7 @@ export function AdminInfo() {
                 }
             })
     }
+
 async function getInfoUser() {
     fetch('admingetuserinfo',
         {

@@ -44,41 +44,45 @@ namespace kz.Controllers
             }
 
 
-            Admin? admin = await db.Admins.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
-
-            if (admin != null)
+            Setting? u = await db.Settings.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
+            if(u != null)
             {
-                var logins = db.Bans.GroupBy(u => u.TabelCode).Select(g => new
+                User? admin = await db.Users.FirstOrDefaultAsync(a => a.TabelCode == u.TabelCode && a.Role == 1);
+                if (admin != null)
                 {
-                    g.Key,
-                    Count = g.Count()
-                }).ToList();
-
-                var usersCodeName = db.Users.AsNoTracking().Select(u => new {u.Name, u.TabelCode}).ToList();
-                var dataList = new List<UserTable>();
-                
-                foreach (var user in usersCodeName)
-                {
-                    int userBan = 0;
-                    for(var i = 0; i < logins.Count; i++) 
+                    var logins = db.Bans.GroupBy(u => u.TabelCode).Select(g => new
                     {
-                        if (user.TabelCode == logins[i].Key)
-                        {
-                            userBan = logins[i].Count;
-                        }
-                    }
-                    dataList.Add(new UserTable {  Name = user.Name, TabelCode = user.TabelCode, NumberBans = userBan.ToString()});
-                }
+                        g.Key,
+                        Count = g.Count()
+                    }).ToList();
 
-                ResponseJsonObj dataUsers = new ResponseJsonObj();
-                dataUsers.Users = dataList;
-                string JsonArticles = JsonSerializer.Serialize(dataUsers, typeof(ResponseJsonObj));
-                await Response.WriteAsync(JsonArticles);
+                    var usersCodeName = db.Users.AsNoTracking().Select(u => new { u.Name, u.TabelCode }).ToList();
+                    var dataList = new List<UserTable>();
+
+                    foreach (var user in usersCodeName)
+                    {
+                        int userBan = 0;
+                        for (var i = 0; i < logins.Count; i++)
+                        {
+                            if (user.TabelCode == logins[i].Key)
+                            {
+                                userBan = logins[i].Count;
+                            }
+                        }
+                        dataList.Add(new UserTable { Name = user.Name, TabelCode = user.TabelCode, NumberBans = userBan.ToString() });
+                    }
+
+                    ResponseJsonObj dataUsers = new ResponseJsonObj();
+                    dataUsers.Users = dataList;
+                    string JsonArticles = JsonSerializer.Serialize(dataUsers, typeof(ResponseJsonObj));
+                    await Response.WriteAsync(JsonArticles);
+                }
+                else
+                {
+                    await Response.WriteAsync("Ошибка с аккаунтом админа");
+                }
             }
-            else
-            {
-                await Response.WriteAsync("Ошибка с аккаунтом админа");
-            }
+            
         }
     }
 }

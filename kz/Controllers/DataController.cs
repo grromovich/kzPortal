@@ -16,11 +16,12 @@ namespace kz.Controllers
     {
         private class Tabel
         {
-            public string? TabelCode { get; set; }
+            public string? APIkey { get; set; }
         }
         public class JsonObj
         {
             public string? TabelCode { get; set; }
+            public int Role { get; set; }
             public string? Name { get; set; }
             public List<Article>? Articles { get; set; }
             public double BeforeDolg { get; set; }
@@ -30,18 +31,20 @@ namespace kz.Controllers
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            Tabel code;
+            Tabel data;
             using (var reader = new StreamReader(Request.Body))
             {
                 var body = await reader.ReadToEndAsync();
-                code = JsonSerializer.Deserialize<Tabel>(body);
+                data = JsonSerializer.Deserialize<Tabel>(body);
             }
 
-            User? user = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.TabelCode == code.TabelCode);
+            Setting? userSetting = await db.Settings.AsNoTracking().FirstOrDefaultAsync(u => u.APIkey == data.APIkey);
             
-            if (user != null)
+            if (userSetting != null)
             {
-                List <Article> articles = db.Articles.AsNoTracking().Where(u => u.TabelCode == code.TabelCode).ToList();
+                User? user = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.TabelCode == userSetting.TabelCode);
+
+                List <Article> articles = db.Articles.AsNoTracking().Where(u => u.TabelCode == user.TabelCode).ToList();
                 JsonObj obj = new JsonObj();
                 obj.TabelCode = user.TabelCode;
                 obj.Name = user.Name;
@@ -49,6 +52,7 @@ namespace kz.Controllers
                 obj.BeforeDolg = user.BeforeDolg;
                 obj.AfterDolg = user.AfterDolg;
                 obj.TotalDohod = user.TotalDohod;
+                obj.Role = user.Role;
                 string JsonArticles = JsonSerializer.Serialize(obj, typeof(JsonObj));
                 await Response.WriteAsync(JsonArticles);
             }

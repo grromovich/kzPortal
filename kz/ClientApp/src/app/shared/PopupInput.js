@@ -43,6 +43,7 @@ export class PopupInput extends Component {
         return (
             <div className="popup-input__container">
                 <input 
+
                     style={{paddingLeft: this.state.paddingLeft}}
                     autoFocus={this.props.autoFocus}
                     autoComplete='off'
@@ -53,6 +54,7 @@ export class PopupInput extends Component {
                     type={this.state.type}
                     className="password-input"
                     maxLength={this.props.maxlength}
+                    ref={this.props.myref}
                 />
                 {this.props.ico && 
                     <>
