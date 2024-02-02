@@ -6,6 +6,7 @@ import lockImg from '../../assets/images/lock.svg';
 import {ExitPopup} from "../../components/ExitPopup";
 import { Tables } from "../../components/Tables";
 import { PasswordPopup } from "../../components/PasswordPopup";
+import { UNSAFE_DataRouterContext } from 'react-router-dom';
 
 export function Main() {
 
@@ -17,7 +18,7 @@ export function Main() {
     const [visibilityPasswordPopup, setVisibilityPasswordPopup] = useState("hidden")
     const [visibilityExitPopup, setVisibilityExitPopup] = useState("hidden")
 
-    const [isLoadPrint, setisLoadPrint] = useState(false)
+    const [isLoadPrint, setIsLoadPrint] = useState(false)
 
     function onExitClick() {
         sessionStorage.setItem("TabelCode", "");
@@ -50,8 +51,8 @@ export function Main() {
                                 className="header-img"
                                 src={printerImg}
                                 alt=""
-                                onClick={() => { setisLoadPrint(!isLoadPrint);GetFIle() }} /> :
-                                <div className="main-loader" onClick={()=>{setisLoadPrint(!isLoadPrint)}}></div>
+                                onClick={() => { setIsLoadPrint(!isLoadPrint);GetFIle() }} /> :
+                                <div className="main-loader" onClick={()=>{setIsLoadPrint(!isLoadPrint)}}></div>
                             }
                             
                         </li>
@@ -75,9 +76,18 @@ export function Main() {
                     />
                 </div>
             </div>
+            <iframe 
+                id='iprint'
+                style={{display: 'none'}}
+                onLoad={()=>{
+                    let iframe = document.querySelector("#iprint")
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                }}
+            ></iframe>
         </div>
     )
-
+                            //
     async function GetData(tabel) {
         fetch('data',
             {
@@ -110,7 +120,13 @@ export function Main() {
                     body: JSON.stringify({
                         APIkey: sessionStorage.getItem("APIkey"),
                     })
-                }
-                )
+                })
+            .then((response) => response.json())
+            .then((data)=>{
+                let iframe = document.querySelector("#iprint")
+                iframe.src = data['file'];
+                
+                setIsLoadPrint(false)
+            })
             }
 }

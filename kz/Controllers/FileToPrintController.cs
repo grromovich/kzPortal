@@ -35,8 +35,7 @@ namespace kz.Controllers
 
             if (user != null)
             {
-                Response.Headers.ContentDisposition = "attachment; filename=test.pdf";
-                await Response.SendFileAsync("./test/test.txt");
+                await Response.WriteAsJsonAsync(new { File = "/TabelFiles/test.pdf"});
             }
             else
             {

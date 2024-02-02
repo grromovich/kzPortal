@@ -38,8 +38,7 @@ Money float NOT NULL,
 CREATE TABLE [Settings] (
 TabelCode varchar(6) NOT NULL,
 APIkey varchar(255),
-APIkeyDate datetime2,
-LastLoginDate datetime2,
+TabelFile varchar(255),
 );
 
 CREATE TABLE [BadLogins] (
