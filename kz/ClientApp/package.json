@@ -8,6 +8,7 @@
     "http-proxy-middleware": "^2.0.6",
     "merge": "^2.1.1",
     "oidc-client": "^1.11.5",
+    "pdfjs-dist": "^4.0.379",
     "print-js": "^1.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

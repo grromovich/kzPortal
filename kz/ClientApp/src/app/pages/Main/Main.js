@@ -6,7 +6,6 @@ import lockImg from '../../assets/images/lock.svg';
 import {ExitPopup} from "../../components/ExitPopup";
 import { Tables } from "../../components/Tables";
 import { PasswordPopup } from "../../components/PasswordPopup";
-import { UNSAFE_DataRouterContext } from 'react-router-dom';
 
 export function Main() {
 
@@ -116,17 +115,29 @@ export function Main() {
                     //withCrefentials: true,
                     crossorigin: true,
                     mode: "no-cors",
-                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                    headers: {"Content-Type": "application/json" },
                     body: JSON.stringify({
                         APIkey: sessionStorage.getItem("APIkey"),
                     })
                 })
-            .then((response) => response.json())
+                .then((data) => {
+                    const blob = new Blob([data], {type: "application/pdf;base64"}),
+                    url = window.URL.createObjectURL(blob);
+                    /*
+                    let a = document.createElement('a')
+                    a.href = url;
+                    document.body.appendChild(a)
+                    a.click();
+
+                    console.log(url);
+                    */
+                })
+            /*.then((response) => response.json())
             .then((data)=>{
                 let iframe = document.querySelector("#iprint")
                 iframe.src = data['file'];
                 
                 setIsLoadPrint(false)
-            })
+            })*/
             }
 }

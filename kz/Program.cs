@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ app.UseCors(c =>
 
 app.UseHttpsRedirection();
 app.UseForwardedHeaders();
+
 app.UseStaticFiles();
 app.UseRouting();
 

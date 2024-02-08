@@ -35,7 +35,8 @@ namespace kz.Controllers
 
             if (user != null)
             {
-                await Response.WriteAsJsonAsync(new { File = "/TabelFiles/test.pdf"});
+                Response.ContentType = "application/pdf";
+                await Response.SendFileAsync("./files/test.pdf");
             }
             else
             {
