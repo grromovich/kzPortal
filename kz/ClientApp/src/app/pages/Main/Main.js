@@ -120,24 +120,27 @@ export function Main() {
                         APIkey: sessionStorage.getItem("APIkey"),
                     })
                 })
-                .then((data) => {
-                    const blob = new Blob([data], {type: "application/pdf;base64"}),
-                    url = window.URL.createObjectURL(blob);
-                    /*
-                    let a = document.createElement('a')
-                    a.href = url;
-                    document.body.appendChild(a)
-                    a.click();
+                .then((data) => data.json())
+                .then(data=> {
+                    var base64str = data['file'];
 
-                    console.log(url);
-                    */
+                    // decode base64 string, remove space for IE compatibility
+                    var binary = atob(base64str.replace(/\s/g, ''));
+                    var len = binary.length;
+                    var buffer = new ArrayBuffer(len);
+                    var view = new Uint8Array(buffer);
+                    for (var i = 0; i < len; i++) {
+                        view[i] = binary.charCodeAt(i);
+                    }
+
+                    // create the blob object with content-type "application/pdf"               
+                    var blob = new Blob( [view], { type: "application/pdf" });
+                    var url = URL.createObjectURL(blob);
+
+                    let iframe = document.querySelector("#iprint")
+                    iframe.src = url
+                    
+                    setIsLoadPrint(false)
                 })
-            /*.then((response) => response.json())
-            .then((data)=>{
-                let iframe = document.querySelector("#iprint")
-                iframe.src = data['file'];
-                
-                setIsLoadPrint(false)
-            })*/
             }
 }

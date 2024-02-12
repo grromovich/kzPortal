@@ -7,6 +7,14 @@ using static System.Net.Mime.MediaTypeNames;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Azure;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Reflection.PortableExecutable;
+using System.IO;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Data;
+using System.Text;
 
 namespace kz.Controllers
 {
@@ -35,8 +43,10 @@ namespace kz.Controllers
 
             if (user != null)
             {
-                Response.ContentType = "application/pdf";
-                await Response.SendFileAsync("./files/test.pdf");
+                String filePath = "./files/test.pdf";
+                var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                String file = Convert.ToBase64String(bytes);
+                await Response.WriteAsJsonAsync(new { file = file });
             }
             else
             {

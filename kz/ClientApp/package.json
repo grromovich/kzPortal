@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^5.3.2",
+    "downloadjs": "^1.4.7",
     "gsap": "^3.12.4",
     "http-proxy-middleware": "^2.0.6",
     "merge": "^2.1.1",
