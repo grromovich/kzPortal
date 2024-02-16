@@ -159,7 +159,7 @@ export function Home() {
     )
 
     async function ValidateTabelCode(code, password) {
-        fetch('login',
+        fetch('/api/login',
             {
                 method: "POST",
                 //withCrefentials: true,

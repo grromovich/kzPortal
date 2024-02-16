@@ -4,33 +4,28 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using static kz.Controllers.LoginController;
 
 
 namespace kz.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class PasswordChangeController : Controller
     {
-        public class JsonData
+        public class PasswordChangeRequest
         {
-            public string? APIkey { get; set; }
-            public string? OldPassword { get; set; }
-            public string? NewPassword { get; set; }
+            public string APIkey { get; set; } = "";
+            public string OldPassword { get; set; } = "";
+            public string NewPassword { get; set; } = "";
         }
 
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            // получаем табельный код и пароль
-            // возвращаем токен
-            JsonData data;
-            using (var reader = new StreamReader(Request.Body))
-            {
-                var body = await reader.ReadToEndAsync();
-                data = JsonSerializer.Deserialize<JsonData>(body);
-            }
+            var data = await HttpContext.Request.ReadFromJsonAsync<PasswordChangeRequest>();
+
             Setting? setting = db.Settings.FirstOrDefault(u => u.APIkey == data.APIkey);
             User? user = db.Users.FirstOrDefault(u => u.TabelCode == setting.TabelCode);
             if (user != null)
@@ -56,8 +51,9 @@ namespace kz.Controllers
             }
             else
             {
-                await Response.WriteAsJsonAsync(new { Error = "Ошибка смены пароля 1" });
+                await Response.WriteAsJsonAsync(new { Error = "Ошибка смены пароля" });
             }
+            
         }
 
     }

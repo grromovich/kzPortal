@@ -1,51 +1,31 @@
 ﻿using kz.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using static System.Net.Mime.MediaTypeNames;
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Azure;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Reflection.PortableExecutable;
-using System.IO;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Data;
-using System.Text;
 
 namespace kz.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class FileToPrintController : Controller
     {
-        private class JsonObj
+        private class FileToPrintRequest
         {
-            public string? APIkey { get; set; }
+            public string APIkey { get; set; } = "";
         }
 
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            JsonObj data;
-            using (var reader = new StreamReader(Request.Body))
-            {
-                var body = await reader.ReadToEndAsync();
-                data = JsonSerializer.Deserialize<JsonObj>(body);
-            }
-
+            var data = await HttpContext.Request.ReadFromJsonAsync<FileToPrintRequest>();
 
             Setting? user = await db.Settings.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
-
+            
             if (user != null)
             {
                 String filePath = "./files/test.pdf";
-                var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
-                String file = Convert.ToBase64String(bytes);
+                var bytes = await System.IO.File.ReadAllBytesAsync(filePath); // Перервод pdf файла в байты, затем
+                String file = Convert.ToBase64String(bytes);                  // конвертирую в base64, чтобы передать по сети
                 await Response.WriteAsJsonAsync(new { file = file });
             }
             else

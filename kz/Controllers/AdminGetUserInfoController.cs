@@ -16,14 +16,14 @@ namespace kz.Controllers
     [Route("[controller]")]
     public class AdminGetUserInfoController : Controller
     {
-        private class JsonObj
+        private class AdminGetUserInfoRequest
         {
-            public string? APIkey { get; set; }
-            public string? UserTabelCode { get; set; }
+            public string APIkey { get; set; } = "";
+            public string UserTabelCode { get; set; } = "";
 
         }
 
-        public class UserTable
+        public class AdminGetUserInfoResponseTable
         {
             public string? Name { get; set; }
             public string? TabelCode { get; set; }
@@ -42,12 +42,7 @@ namespace kz.Controllers
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            JsonObj data;
-            using (var reader = new StreamReader(Request.Body))
-            {
-                var body = await reader.ReadToEndAsync();
-                data = JsonSerializer.Deserialize<JsonObj>(body);
-            }
+            var data = await HttpContext.Request.ReadFromJsonAsync<AdminGetUserInfoRequest>();
 
             Setting? u = await db.Settings.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
             if (u != null)
@@ -71,13 +66,13 @@ namespace kz.Controllers
                         banuser.Add(new BanUser { IP = UserBan.IPaddress, Date = UserBan.BanDate.ToString() });
                     }
 
-                    UserTable User = new UserTable();
+                    var User = new AdminGetUserInfoResponseTable();
                     User.Name = userInfo.Name;
                     User.TabelCode = userInfo.TabelCode;
                     User.NumberBans = numberBans;
                     User.LastLoginDate = login;
                     User.Bans = banuser;
-                    string JsonArticles = JsonSerializer.Serialize(User, typeof(UserTable));
+                    string JsonArticles = JsonSerializer.Serialize(User, typeof(AdminGetUserInfoResponseTable));
                     await Response.WriteAsync(JsonArticles);
                 }
                 else

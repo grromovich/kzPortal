@@ -5,14 +5,14 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
   env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:33829';
 
 const context = [
-    "/login",
-    "/data",
-    "/passwordchange",
-    "/adminlogin",
-    "/admindata",
-    "/adminchangepassword",
-    "/admingetuserinfo",
-    "/filetoprint"
+    "/api/login",
+    "/api/data",
+    "/api/passwordchange",
+    "/api/adminlogin",
+    "/api/admindata",
+    "/api/adminchangepassword",
+    "/api/admingetuserinfo",
+    "/api/filetoprint"
 ];
 
 const onError = (err, req, resp, target) => {

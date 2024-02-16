@@ -1,29 +1,25 @@
 ﻿using System.Data;
 using kz.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Azure;
 using System.Net;
 
 namespace kz.Controllers
 {
-    public class JsonData
-    {
-        public string? TabelCode { get; set; }
-        public string? Password { get; set; }
-    }
-
-
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class LoginController : Controller
     {
+        public class LoginRequest
+        {
+            public string TabelCode { get; set; } = "";
+            public string Password { get; set; } = "";
+        }
+
         public static string ToSHA256(string s)
         {
             string key = "banana"; // Не менять. Пароли не будут подходить
@@ -93,14 +89,7 @@ namespace kz.Controllers
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            // получаем табельный код и пароль
-            // возвращаем токен
-            JsonData data;
-            using (var reader = new StreamReader(Request.Body))
-            {
-                var body = await reader.ReadToEndAsync();
-                data = JsonSerializer.Deserialize<JsonData>(body);
-            }
+            var data = new LoginRequest();
 
             User? user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == data.TabelCode);
             if (user != null)
