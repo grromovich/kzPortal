@@ -1,23 +1,19 @@
 ﻿using kz.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using kz.Controllers.other.HttpClasses;
+using kz.Controllers.other.HelpFunctions;
 
 namespace kz.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class FileToPrintController : Controller
     {
-        private class FileToPrintRequest
-        {
-            public string APIkey { get; set; } = "";
-        }
-
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            var data = await HttpContext.Request.ReadFromJsonAsync<FileToPrintRequest>();
+            var data = await ReadJsonClass.ReadJson(Request.Body, new FileToPrintRequest());
 
             Setting? user = await db.Settings.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
             

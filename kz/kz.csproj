@@ -36,17 +36,21 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Compile Remove="ClientApp\src\components\elements\**" />
+    <Compile Remove="Controllers\assets\**" />
     <Compile Remove="docs\Новая папка\**" />
     <Compile Remove="wwwroot\**" />
     <Content Remove="$(SpaRoot)**" />
     <Content Remove="ClientApp\src\components\elements\**" />
+    <Content Remove="Controllers\assets\**" />
     <Content Remove="docs\Новая папка\**" />
     <Content Remove="wwwroot\**" />
     <EmbeddedResource Remove="ClientApp\src\components\elements\**" />
+    <EmbeddedResource Remove="Controllers\assets\**" />
     <EmbeddedResource Remove="docs\Новая папка\**" />
     <EmbeddedResource Remove="wwwroot\**" />
     <None Remove="$(SpaRoot)**" />
     <None Remove="ClientApp\src\components\elements\**" />
+    <None Remove="Controllers\assets\**" />
     <None Remove="docs\Новая папка\**" />
     <None Remove="wwwroot\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
@@ -63,7 +67,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Новая папка\" />
     <Folder Include="files\" />
   </ItemGroup>
 

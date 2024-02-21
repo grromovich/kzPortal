@@ -88,7 +88,7 @@ export function Main() {
     )
                             //
     async function GetData(tabel) {
-        fetch('data',
+        fetch('/api/data',
             {
                 method: "POST",
                 //withCrefentials: true,
@@ -109,7 +109,7 @@ export function Main() {
         }
         
         async function GetFIle() {
-            fetch('filetoprint',
+            fetch('/api/filetoprint',
                 {
                     method: "POST",
                     //withCrefentials: true,

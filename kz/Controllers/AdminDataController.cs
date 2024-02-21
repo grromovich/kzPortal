@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using kz.Controllers.other.HttpClasses;
+using kz.Controllers.other.HelpFunctions;
 
 namespace kz.Controllers
 {
@@ -10,28 +12,10 @@ namespace kz.Controllers
     [Route("api/[controller]")]
     public class AdminDataController : Controller
     {
-        private class AdminDataRequest
-        {
-            public string APIkey { get; set; } = "";
-        }
-
-        public class AdminDataResponseTable
-        {
-            public string Name { get; set; } = "";
-            public string TabelCode { get; set; } = "";
-            public string NumberBans { get; set; } = "";
-        }
-
-        public class ResponseJsonObj
-        {
-            public List<AdminDataResponseTable> Users { get; set; } = new List<AdminDataResponseTable>();
-        }
-
-
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            var data = await HttpContext.Request.ReadFromJsonAsync<AdminDataRequest>();
+            var data = await ReadJsonClass.ReadJson(Request.Body, new AdminDataRequest());
 
             Setting? u = await db.Settings.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
             if(u != null)
@@ -61,9 +45,9 @@ namespace kz.Controllers
                         dataList.Add(new AdminDataResponseTable { Name = user.Name, TabelCode = user.TabelCode, NumberBans = userBan.ToString() });
                     }
 
-                    var dataUsers = new ResponseJsonObj();
+                    var dataUsers = new AdminDataResponseObj();
                     dataUsers.Users = dataList;
-                    string JsonArticles = JsonSerializer.Serialize(dataUsers, typeof(ResponseJsonObj));
+                    string JsonArticles = JsonSerializer.Serialize(dataUsers, typeof(AdminDataResponseObj));
                     await Response.WriteAsync(JsonArticles);
                 }
                 else

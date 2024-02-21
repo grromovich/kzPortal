@@ -2,11 +2,8 @@
 using kz.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using System.Diagnostics;
-using System.Security.Cryptography;
-using System.Text;
-using System.Net;
+using kz.Controllers.other.HttpClasses;
+using kz.Controllers.other.HelpFunctions;
 
 namespace kz.Controllers
 {
@@ -14,82 +11,10 @@ namespace kz.Controllers
     [Route("api/[controller]")]
     public class LoginController : Controller
     {
-        public class LoginRequest
-        {
-            public string TabelCode { get; set; } = "";
-            public string Password { get; set; } = "";
-        }
-
-        public static string ToSHA256(string s)
-        {
-            string key = "banana"; // Не менять. Пароли не будут подходить
-            using var sha256 = SHA256.Create();
-            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(s + key));
-            var sb = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                sb.Append(bytes[i].ToString("x2"));
-            }
-            return sb.ToString();
-        }
-
-        public int GetNumberBadLogins(List<BadLogin> listBadLogins, DateTime LastLoginDate = default(DateTime)) {
-            int number = 0;
-
-            int n = 3;
-
-            if(listBadLogins.Count < 3)
-            {
-                n = listBadLogins.Count;
-            }
-
-            for(int i = listBadLogins.Count - 1; i > listBadLogins.Count - n - 1; i--) 
-            {
-                var minutes = (DateTime.Now - listBadLogins[i].BadLoginDate).Duration();
-                if(minutes.Minutes < 7)
-                {
-                    Debug.WriteLine(LastLoginDate > default(DateTime));
-                    Debug.WriteLine((LastLoginDate - listBadLogins[i].BadLoginDate).Duration().Minutes);
-                    if (LastLoginDate > default(DateTime) && LastLoginDate > listBadLogins[i].BadLoginDate)
-                    {
-                        break;
-                    }
-                    number++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            
-            return number;
-        }
-
-        // Функция для конвертации ipv4 в ipv6
-        public string GetIPaddress(IPAddress addr)
-        {
-            string result = "";
-            if (addr != null)
-            {
-                // Сравниваем адреса систем
-                // Получение адреса ломается, когда сервер и браузер запущен на одной и то же машине
-                if (addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
-                {
-                    addr = System.Net.Dns.GetHostEntry(addr).AddressList
-            .First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
-                }
-                result = addr.ToString();
-
-                return result;
-            }
-               
-            return addr.ToString();
-        }
-
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            var data = new LoginRequest();
+            var data = await ReadJsonClass.ReadJson(Request.Body, new LoginRequest());
 
             User? user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == data.TabelCode);
             if (user != null)
@@ -108,9 +33,9 @@ namespace kz.Controllers
                     }
                 }
 
-                if (user.Password == ToSHA256(data.Password))
+                if (user.Password == HelpFunctions.ToSHA256(data.Password))
                 {
-                    string APIkey = ToSHA256(new Random().Next().ToString());
+                    string APIkey = HelpFunctions.ToSHA256(new Random().Next().ToString());
                     var UserSettings = db.Settings.AsNoTracking().FirstOrDefault(s => s.TabelCode ==  user.TabelCode);
                     if (UserSettings != null)
                     {
@@ -137,7 +62,7 @@ namespace kz.Controllers
                 }
                 else
                 {
-                    var ip = GetIPaddress(Request.HttpContext.Connection.RemoteIpAddress);
+                    var ip = HelpFunctions.GetIPaddress(Request.HttpContext.Connection.RemoteIpAddress);
                     BadLogin login = new BadLogin
                     {
                         TabelCode = user.TabelCode,
@@ -153,11 +78,11 @@ namespace kz.Controllers
 
                     if (LastLoginDate != null)
                     {
-                        NumberBadLogins = GetNumberBadLogins(db.BadLogins.AsNoTracking().ToList(), LastLoginDate.LastLoginDate);
+                        NumberBadLogins = HelpFunctions.GetNumberBadLogins(db.BadLogins.AsNoTracking().ToList(), LastLoginDate.LastLoginDate);
                     }
                     else
                     {
-                        NumberBadLogins = GetNumberBadLogins(db.BadLogins.AsNoTracking().ToList());
+                        NumberBadLogins = HelpFunctions.GetNumberBadLogins(db.BadLogins.AsNoTracking().ToList());
                     }
 
                     if (NumberBadLogins > 2)

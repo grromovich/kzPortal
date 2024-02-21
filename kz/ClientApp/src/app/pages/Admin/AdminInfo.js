@@ -210,7 +210,7 @@ export function AdminInfo() {
     )
     
     async function SearchUsers() {
-        fetch('admindata',
+        fetch('/api/admindata',
             {
                 method: "POST",
                 //withCrefentials: true,
@@ -233,7 +233,7 @@ export function AdminInfo() {
     }
 
 async function getInfoUser() {
-    fetch('admingetuserinfo',
+    fetch('/api/admingetuserinfo',
         {
             method: "POST",
             //withCrefentials: true,

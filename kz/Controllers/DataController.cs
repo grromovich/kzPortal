@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using kz.Controllers.other.HttpClasses;
+using kz.Controllers.other.HelpFunctions;
 
 namespace kz.Controllers
 {
@@ -10,24 +12,10 @@ namespace kz.Controllers
     [Route("api/[controller]")]
     public class DataController : Controller
     {
-        private class DataRequest
-        {
-            public string APIkey { get; set; } = "";
-        }
-        public class DataResponse
-        {
-            public string TabelCode { get; set; } = "";
-            public int Role { get; set; }
-            public string Name { get; set; } = "";
-            public List<Article> Articles { get; set; } = new List<Article>();
-            public double BeforeDolg { get; set; }
-            public double AfterDolg { get; set; }
-            public double TotalDohod { get; set; }
-        }
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            var data = await HttpContext.Request.ReadFromJsonAsync<DataRequest>();
+            var data = await ReadJsonClass.ReadJson(Request.Body, new DataRequest());
 
             Setting? userSetting = await db.Settings.AsNoTracking().FirstOrDefaultAsync(u => u.APIkey == data.APIkey);
             

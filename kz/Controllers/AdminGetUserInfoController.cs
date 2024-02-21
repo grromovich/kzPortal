@@ -1,48 +1,20 @@
 ﻿using kz.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using static System.Net.Mime.MediaTypeNames;
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using static kz.Controllers.AdminDataController;
+using kz.Controllers.other.HttpClasses;
+using kz.Controllers.other.HelpFunctions;
 
 namespace kz.Controllers
 {
-
     [ApiController]
     [Route("[controller]")]
     public class AdminGetUserInfoController : Controller
     {
-        private class AdminGetUserInfoRequest
-        {
-            public string APIkey { get; set; } = "";
-            public string UserTabelCode { get; set; } = "";
-
-        }
-
-        public class AdminGetUserInfoResponseTable
-        {
-            public string? Name { get; set; }
-            public string? TabelCode { get; set; }
-            public string? NumberBans {  get; set; }
-            public string? LastLoginDate { get; set; }
-            public List<BanUser> Bans { get; set; }
-        }
-
-        public class BanUser
-        {
-            public string? IP { get; set; }
-            public string? Date { get; set; }
-        }
-
-
         [HttpPost]
         public async Task Post(ApplicationContext db)
         {
-            var data = await HttpContext.Request.ReadFromJsonAsync<AdminGetUserInfoRequest>();
+            var data = await ReadJsonClass.ReadJson(Request.Body, new AdminGetUserInfoRequest());
 
             Setting? u = await db.Settings.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
             if (u != null)
@@ -66,13 +38,13 @@ namespace kz.Controllers
                         banuser.Add(new BanUser { IP = UserBan.IPaddress, Date = UserBan.BanDate.ToString() });
                     }
 
-                    var User = new AdminGetUserInfoResponseTable();
+                    var User = new AdminGetUserInfoResponseObj();
                     User.Name = userInfo.Name;
                     User.TabelCode = userInfo.TabelCode;
                     User.NumberBans = numberBans;
                     User.LastLoginDate = login;
                     User.Bans = banuser;
-                    string JsonArticles = JsonSerializer.Serialize(User, typeof(AdminGetUserInfoResponseTable));
+                    string JsonArticles = JsonSerializer.Serialize(User, typeof(AdminGetUserInfoResponseObj));
                     await Response.WriteAsync(JsonArticles);
                 }
                 else
