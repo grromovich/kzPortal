@@ -5,7 +5,7 @@ import { PopupInput } from "../../shared/PopupInput";
 import userImg from "../../assets/images/user.svg";
 import passwordImg from "../../assets/images/password.svg";
 
-import symbols from "./symbols.js";
+//import symbols from "./symbols.js";
 
 export function Home() {
     const [tabelcode, setTabelcode] = useState("");
@@ -51,7 +51,7 @@ export function Home() {
         }
     }
 
-    function PasswordCheck(password) {
+    /*function PasswordCheck(password) {
         if(password.length < 8){
             return "Пароль должен содержать 8 или более символов"
         }
@@ -120,7 +120,7 @@ export function Home() {
             }
         }
         return maxnumber;
-    }
+    }*/
     
     return (
         <div className="popup" onKeyDown={onEnterPressed }>

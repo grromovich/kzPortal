@@ -16,11 +16,13 @@ namespace kz.Controllers
         {
             var data = await ReadJsonClass.ReadJson(Request.Body, new AdminPasswordChangeRequest());
             
-            Setting? admin = await db.Settings.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
+            Setting? setting = await db.Settings.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
 
-            if (admin != null)
+            if (setting != null)
             {
+                // Проверяем на роль пользователя
                 User user = await db.Users.FirstOrDefaultAsync(u => u.TabelCode == data.TabelCode && u.Role == 1);
+
                 if (user != null)
                 {
                     if (data.Password.Length > 5)

@@ -63,7 +63,7 @@ export function Main() {
                                 setVisibilityPasswordPopup("visible")
                             }} />
                         </li>
-                        <li onClick={()=>{setVisibilityExitPopup("visible")}}>Выйти</li>
+                        <li onClick={()=>{setVisibilityExitPopup("visible");onExitClick()}}>Выйти</li>
                     </ul>
                 </div>
             </div>
@@ -77,6 +77,7 @@ export function Main() {
             </div>
             <iframe 
                 id='iprint'
+                title="iprint"
                 style={{display: 'none'}}
                 onLoad={()=>{
                     let iframe = document.querySelector("#iprint")

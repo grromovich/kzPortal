@@ -98,7 +98,6 @@ export function AdminInfo() {
     useEffect(()=>{
         setNowUsersNumberSearch(15)
     }, [searchValue])
-
     useEffect(()=>{
         if(inView){
             if(searchValue){
@@ -108,6 +107,7 @@ export function AdminInfo() {
                 setNowUsersNumberAll(nowUsersNumberAll+10)
             }
         }
+        // eslint-disable-next-line
     }, [inView])
     
     useEffect(()=>{
@@ -232,6 +232,7 @@ export function AdminInfo() {
             })
     }
 
+// eslint-disable-next-line
 async function getInfoUser() {
     fetch('/api/admingetuserinfo',
         {

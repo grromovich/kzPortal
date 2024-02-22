@@ -18,17 +18,22 @@ namespace kz.Controllers
             var data = await ReadJsonClass.ReadJson(Request.Body, new AdminDataRequest());
 
             Setting? u = await db.Settings.FirstOrDefaultAsync(a => a.APIkey == data.APIkey);
+            
             if(u != null)
             {
                 User? admin = await db.Users.FirstOrDefaultAsync(a => a.TabelCode == u.TabelCode && a.Role == 1);
                 if (admin != null)
                 {
+                    // Выбираем все записи банов ( юзер - кол-во банов )
                     var logins = db.Bans.GroupBy(u => u.TabelCode).Select(g => new
                     {
                         g.Key,
                         Count = g.Count()
                     }).ToList();
 
+
+                    // Выбирем всех пользователей и пробегаемся по ним
+                    // Считаем кол-во записей по ним
                     var usersCodeName = db.Users.AsNoTracking().Select(u => new { u.Name, u.TabelCode }).ToList();
                     var dataList = new List<AdminDataResponseTable>();
 
@@ -45,8 +50,11 @@ namespace kz.Controllers
                         dataList.Add(new AdminDataResponseTable { Name = user.Name, TabelCode = user.TabelCode, NumberBans = userBan.ToString() });
                     }
 
-                    var dataUsers = new AdminDataResponseObj();
-                    dataUsers.Users = dataList;
+                    // Возварщаем список юзеров
+                    var dataUsers = new AdminDataResponseObj
+                    {
+                        Users = dataList
+                    };
                     string JsonArticles = JsonSerializer.Serialize(dataUsers, typeof(AdminDataResponseObj));
                     await Response.WriteAsync(JsonArticles);
                 }

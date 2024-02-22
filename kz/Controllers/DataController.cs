@@ -21,17 +21,23 @@ namespace kz.Controllers
             
             if (userSetting != null)
             {
+                
                 User? user = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.TabelCode == userSetting.TabelCode);
 
+                // Выбирем по артиклю 
                 List <Article> articles = db.Articles.AsNoTracking().Where(u => u.TabelCode == user.TabelCode).ToList();
-                var obj = new DataResponse();
-                obj.TabelCode = user.TabelCode;
-                obj.Name = user.Name;
-                obj.Articles = articles;
-                obj.BeforeDolg = user.BeforeDolg;
-                obj.AfterDolg = user.AfterDolg;
-                obj.TotalDohod = user.TotalDohod;
-                obj.Role = user.Role;
+
+                // Складываем данные в объект и оправляем
+                var obj = new DataResponse
+                {
+                    TabelCode = user.TabelCode,
+                    Name = user.Name,
+                    Articles = articles,
+                    BeforeDolg = user.BeforeDolg,
+                    AfterDolg = user.AfterDolg,
+                    TotalDohod = user.TotalDohod,
+                    Role = user.Role,
+                };
                 string JsonArticles = JsonSerializer.Serialize(obj, typeof(DataResponse));
                 await Response.WriteAsync(JsonArticles);
             }

@@ -15,11 +15,14 @@ namespace kz.Controllers
         {
             var data = await ReadJsonClass.ReadJson(Request.Body, new PasswordChangeRequest());
 
+            // По ключу находим пользователя в users
             Setting? setting = db.Settings.FirstOrDefault(u => u.APIkey == data.APIkey);
             User? user = db.Users.FirstOrDefault(u => u.TabelCode == setting.TabelCode);
 
             if (user != null)
             {
+                // Сравиваем пароли и проверяем на длинну.
+                // Добавить еще сравнений
                 if (user.Password == HelpFunctions.ToSHA256(data.OldPassword))
                 {
                     if(data.NewPassword.Length > 5)
