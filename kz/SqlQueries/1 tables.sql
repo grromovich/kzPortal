@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS [Users];
 CREATE TABLE [Users] (
 TabelCode varchar(6) NOT NULL PRIMARY KEY,
 Name nvarchar(255) NOT NULL,
-Password varchar(64),
+Password varchar(64) NOT NULL,
 BeforeDolg float NOT NULL,
 AfterDolg float NOT NULL,
 TotalDohod float NOT NULL,
@@ -39,12 +39,15 @@ CREATE TABLE [Settings] (
 TabelCode varchar(6) NOT NULL,
 APIkey varchar(255),
 TabelFile varchar(255),
+APIkeyDate datetime2,
+LastLoginDate datetime2,
 );
 
 CREATE TABLE [BadLogins] (
 TabelCode varchar(6) NOT NULL,
 BadLoginDate datetime2,
 IPaddress varchar(30) NOT NULL,
+
 );
 
 CREATE TABLE [Bans] (
@@ -55,5 +58,6 @@ IPaddress varchar(30) NOT NULL,
 
 SELECT * FROM [Users];
 SELECT * FROM [Articles];
-SELECT * FROM [Settings];
 SELECT * FROM [BadLogins];
+SELECT * FROM [Settings];
+SELECT * FROM [Bans];

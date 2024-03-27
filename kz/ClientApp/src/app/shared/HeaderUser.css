@@ -1,0 +1,43 @@
+.user-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+}
+
+.header-info-ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.header-name {
+    font-size: 20px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.header-tabelcode {
+    font-size: 17px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.header-circle {
+    height: 50px;
+    width: 50px;
+    background-color: #E7E7E7;
+    border-radius: 100px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+}
+
+
+.header-circle {
+    user-select: none;
+}

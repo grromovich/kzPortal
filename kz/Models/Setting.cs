@@ -6,6 +6,7 @@ namespace kz.Models
     {
         public string TabelCode { get; set; }
         public string APIkey { get; set; }
+        public string? TabelFile { get; set; }
         public DateTime APIkeyDate {  get; set; }
         public DateTime LastLoginDate { get; set;}
     }

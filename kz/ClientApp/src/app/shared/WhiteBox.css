@@ -1,0 +1,13 @@
+.white-box {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    user-select: none;
+}
+
+.relative {
+    position: relative;
+}

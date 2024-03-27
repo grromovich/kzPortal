@@ -6,7 +6,8 @@ import {ExitPopup} from "../../components/ExitPopup";
 import { User } from "../../shared/UserFromAdminTable";
 import krestImg from '../../assets/images/krest.svg';
 import searchImg from '../../assets/images/search.svg';
-
+import { Header } from "../../components/Header";
+import { HeaderUser } from "../../shared/HeaderUser";
 
 
 export function AdminInfo() {
@@ -166,44 +167,45 @@ export function AdminInfo() {
                     </div>
                 </div>
             </div>
-            <div className="main-header">
-                <div className="main-header__container">
-                    <ul className="main-header_menu">
-                        <li>
-                            <div className="admin-input-group">
-                                <div className="img-group">
-                                    <img src={searchImg} alt="Поиск"/>
-                                    <div className="admin-white-box"></div>
-                                </div>
-                                <input 
-                                    className='' 
-                                    value={searchValue} 
-                                    onChange={(change)=>setSearchValue(change.target.value)} 
-                                    placeholder="Поиск"
-                                    autoFocus
-                                />
-                            </div>
-                        </li>
-                        <li className='bold'><a href="/main">Вернуться</a></li>
-                        <li onClick={()=>{setVisibilityExitPopup("visible")}}>Выйти</li>
-                    </ul>
-                </div>
-            </div>
+            <Header>
+                <ul className="main-header_menu">
+                    <HeaderUser 
+                        name={sessionStorage.getItem("Name")}
+                        tabelCode={sessionStorage.getItem("TabelCode")}   
+                        role={1}
+                        page="/main"
+                    />
+                    <li onClick={()=>{setVisibilityExitPopup("visible")}}>Выйти</li>
+                </ul>
+            </Header>
             <div className="main-main">
-                <div className="main-main__container">
-                <table className="admin-table">
-                    <thead>
-                    <tr>
-                        <th>ФИО</th>
-                        <th>Таб. номер</th>
-                        <th>Блокировки</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {DisplayUsers()}
-                    </tbody>
-                </table>
+                <div className="admin-main__container">
+                    <h1 className='admin-h1'>Пользователи</h1>
+                    <div className="admin-box-container-search">
+                        <input 
+                            className='admin-input-search' 
+                            value={searchValue} 
+                            onChange={(change)=>setSearchValue(change.target.value)} 
+                            placeholder="Поиск по ФИО или табельному"
+                            autoFocus
+                        />  
+                    </div>
+                    <div className="admin-box-container-table">
+                        <table className="admin-table">
+                            <thead>
+                            <tr>
+                                <th>ФИО</th>
+                                <th>Таб. номер</th>
+                                <th>Попытки</th>
+                                <th>Дата посещения</th>
+                                <th>Действия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {DisplayUsers()}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
